@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kishore B — Senior Gameplay Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080a0f;
+    --surface: #0d1117;
+    --surface2: #131820;
+    --border: rgba(255,255,255,0.07);
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #7fff6b;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --syne: 'Syne', sans-serif;
+    --mono: 'Space Mono', monospace;
+    --serif: 'Instrument Serif', serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--syne);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 40px; height: 40px;
+    border: 1px solid rgba(0,229,255,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease-out;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9000;
+    opacity: 0.35;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,10,15,0.7);
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 8px 18px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-cta:hover { background: var(--accent); color: var(--bg); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridShift 20s linear infinite;
+  }
+  @keyframes gridShift {
+    0% { background-position: 0 0; }
+    100% { background-position: 60px 60px; }
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%);
+    top: 50%; left: 30%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-left { position: relative; z-index: 1; }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+
+  h1.hero-name {
+    font-size: clamp(52px, 7vw, 96px);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  h1.hero-name .line1 { display: block; color: var(--text); }
+  h1.hero-name .line2 {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.25);
+    font-style: italic;
+    font-family: var(--serif);
+  }
+
+  .hero-role {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin: 28px 0 24px;
+  }
+
+  .hero-bio {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 460px;
+    margin-bottom: 40px;
+  }
+
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+  .btn-primary:hover::after { transform: translateX(0); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-right {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    width: 100%;
+    max-width: 400px;
+  }
+  .stat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .stat-card:hover { border-color: rgba(0,229,255,0.3); }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .stat-card:hover::after { opacity: 1; }
+  .stat-num {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .stat-card.accent-card { border-color: rgba(0,229,255,0.2); }
+  .stat-card.accent-card .stat-num { color: var(--accent); }
+
+  /* SCROLL INDICATOR */
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--muted), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  /* SECTION WRAPPER */
+  section {
+    padding: 100px 48px;
+    position: relative;
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  .section-title {
+    font-size: clamp(32px, 4vw, 54px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 60px;
+  }
+
+  /* ABOUT */
+  #about { background: var(--surface); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .about-text p {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .about-text p strong { color: var(--text); }
+  .about-text p em { color: var(--accent); font-style: normal; }
+
+  .skills-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .skill-group-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 5px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .tag.accent { border-color: rgba(0,229,255,0.4); color: var(--accent); }
+  .tag.orange { border-color: rgba(255,107,53,0.4); color: var(--accent2); }
+  .tag.green { border-color: rgba(127,255,107,0.4); color: var(--accent3); }
+
+  /* EXPERIENCE */
+  #experience { }
+  .exp-list { display: flex; flex-direction: column; gap: 2px; }
+
+  .exp-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 36px 40px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.3s;
+  }
+  .exp-item:hover::before { transform: scaleY(1); }
+  .exp-item:hover { border-color: rgba(0,229,255,0.2); background: var(--surface2); }
+
+  .exp-item.current::before { transform: scaleY(1); background: var(--accent3); }
+  .exp-item.current { border-color: rgba(127,255,107,0.15); }
+
+  .exp-meta {}
+  .exp-period {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .exp-company {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .exp-type {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .exp-badge {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 3px 8px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: rgba(127,255,107,0.1);
+    color: var(--accent3);
+    border: 1px solid rgba(127,255,107,0.3);
+  }
+
+  .exp-content {}
+  .exp-role {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .exp-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+  .exp-points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .exp-points li {
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .exp-points li::before {
+    content: '→';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .exp-points li strong { color: var(--text); }
+
+  /* PROJECTS */
+  #projects { background: var(--surface); }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .project-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+  }
+  .project-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,229,255,0.03), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .project-card:hover::after { opacity: 1; }
+  .project-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-2px); }
+
+  .project-card.featured {
+    grid-column: span 2;
+    border-color: rgba(0,229,255,0.15);
+  }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .project-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .project-platforms {
+    display: flex;
+    gap: 6px;
+  }
+  .platform-badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 3px 7px;
+    background: rgba(255,107,53,0.1);
+    color: var(--accent2);
+    border: 1px solid rgba(255,107,53,0.3);
+  }
+  .platform-badge.blue {
+    background: rgba(0,229,255,0.07);
+    color: var(--accent);
+    border-color: rgba(0,229,255,0.25);
+  }
+
+  .project-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .project-engine {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .project-desc {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--muted);
+    flex: 1;
+  }
+  .project-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .project-link {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.2s;
+  }
+  .project-link:hover { opacity: 0.7; }
+  .project-link::before { content: '↗'; }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+    margin: 0 48px;
+    width: calc(100% - 96px);
+  }
+
+  /* EDUCATION */
+  #education {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .edu-cards { display: flex; flex-direction: column; gap: 2px; }
+  .edu-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: center;
+    transition: border-color 0.2s;
+  }
+  .edu-card:hover { border-color: rgba(0,229,255,0.25); }
+  .edu-icon {
+    width: 44px; height: 44px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .edu-degree {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .edu-school {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    margin-bottom: 2px;
+  }
+  .edu-year {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* CONTACT */
+  #contact {
+    background: var(--surface);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #contact .bg-text {
+    position: absolute;
+    font-size: clamp(80px, 15vw, 200px);
+    font-weight: 800;
+    color: rgba(255,255,255,0.02);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    letter-spacing: -0.05em;
+    user-select: none;
+  }
+  .contact-inner { position: relative; z-index: 1; }
+  .contact-email {
+    display: inline-block;
+    font-size: clamp(20px, 3vw, 36px);
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 4px;
+    margin: 32px 0 48px;
+    transition: color 0.2s;
+  }
+  .contact-email:hover { color: var(--accent); }
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .contact-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+  }
+  .contact-link::before { content: '↗'; color: var(--accent); }
+  .contact-link:hover { color: var(--accent); }
+
+  .contact-phone {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 32px;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ENTRANCE ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .fade-up:nth-child(2) { transition-delay: 0.1s; }
+  .fade-up:nth-child(3) { transition-delay: 0.2s; }
+  .fade-up:nth-child(4) { transition-delay: 0.3s; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    #hero { grid-template-columns: 1fr; padding: 100px 24px 80px; gap: 60px; }
+    .hero-right { justify-content: flex-start; }
+    .hero-stats { max-width: 100%; }
+    section { padding: 70px 24px; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.featured { grid-column: span 1; }
+    .exp-item { grid-template-columns: 1fr; gap: 16px; padding: 28px 24px; }
+    #education { grid-template-columns: 1fr; gap: 40px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">KB — Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:kishore.b.1996@gmail.com" class="nav-cta">Hire Me</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-left">
+    <div class="hero-tag">Senior Gameplay Engineer</div>
+    <h1 class="hero-name">
+      <span class="line1">Kishore</span>
+      <span class="line2">Boopathi</span>
+    </h1>
+    <div class="hero-role">Unity · Unreal Engine · Photon Quantum</div>
+    <p class="hero-bio">
+      Building immersive multiplayer worlds and precision gameplay systems for 5+ years — from card battlers shipping on Steam to deterministic AI strategy games on Meta Horizon.
+    </p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn-primary">View Projects →</a>
+      <a href="https://www.linkedin.com/in/kishore-boopathi-1242bb87/" target="_blank" class="btn-secondary">LinkedIn ↗</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-stats">
+      <div class="stat-card accent-card">
+        <div class="stat-num">5<span>+</span></div>
+        <div class="stat-label">Years of Experience</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3<span>+</span></div>
+        <div class="stat-label">Shipped Games</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Engines Mastered</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Platforms Released</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">About Me</div>
+  <h2 class="section-title">Gameplay systems <em style="font-family:var(--serif);font-style:italic;color:var(--accent);">from scratch</em>.</h2>
+  <div class="about-grid">
+    <div class="about-text fade-up">
+      <p>I'm a <strong>Senior Gameplay / Systems Engineer</strong> with a deep specialization in Unity and Unreal Engine. Over 5+ years, I've shipped multiplayer games across iOS, Android, Steam, and Meta Horizon — owning full systems end-to-end.</p>
+      <p>My background spans <em>gameplay architecture</em>, <em>backend-integrated live service infrastructure</em>, and <em>deterministic networking via Photon Quantum</em>. I'm equally comfortable designing card battle systems, building scalable AI logic, or squeezing performance out of mobile builds.</p>
+      <p>I've led development stacks, mentored junior engineers, and owned full CI/CD release pipelines as <strong>Release Master</strong> for shipped commercial titles. Based in <strong>Bangalore, Karnataka</strong>.</p>
+    </div>
+    <div class="skills-grid fade-up">
+      <div>
+        <div class="skill-group-label">Languages</div>
+        <div class="skill-tags">
+          <span class="tag accent">C#</span>
+          <span class="tag accent">C++</span>
+          <span class="tag">Golang</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Java</span>
+          <span class="tag">Python</span>
+        </div>
+      </div>
+      <div>
+        <div class="skill-group-label">Engines & Platforms</div>
+        <div class="skill-tags">
+          <span class="tag orange">Unity</span>
+          <span class="tag orange">Unreal Engine</span>
+          <span class="tag">Meta Horizon Worlds</span>
+          <span class="tag">iOS</span>
+          <span class="tag">Android</span>
+          <span class="tag">Steam</span>
+        </div>
+      </div>
+      <div>
+        <div class="skill-group-label">Multiplayer & Backend</div>
+        <div class="skill-tags">
+          <span class="tag green">Photon Quantum</span>
+          <span class="tag green">Nakama</span>
+          <span class="tag">Firebase</span>
+          <span class="tag">AWS</span>
+          <span class="tag">Golang Backend</span>
+        </div>
+      </div>
+      <div>
+        <div class="skill-group-label">Tools & DevOps</div>
+        <div class="skill-tags">
+          <span class="tag">Jenkins CI/CD</span>
+          <span class="tag">Git</span>
+          <span class="tag">Perforce</span>
+          <span class="tag">PlasticSCM</span>
+          <span class="tag">Unity Addressables</span>
+          <span class="tag">JIRA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label">Experience</div>
+  <h2 class="section-title">Where I've <em style="font-family:var(--serif);font-style:italic;color:var(--accent);">shipped</em>.</h2>
+
+  <div class="exp-list">
+
+    <div class="exp-item fade-up">
+      <div class="exp-meta">
+        <div class="exp-period">Jul 2025 – Dec 2025</div>
+        <div class="exp-company">Flecks Labs</div>
+        <div class="exp-type">Full-time</div>
+        <span class="exp-badge">Recent</span>
+      </div>
+      <div class="exp-content">
+        <div class="exp-role">Senior Software Engineer</div>
+        <div class="exp-sub">Meta Horizon Worlds · TypeScript · Photon Quantum · Unity</div>
+        <ul class="exp-points">
+          <li>Developed <strong>multiplayer gameplay systems</strong> for Meta Horizon Worlds using TypeScript.</li>
+          <li>Architected <strong>deterministic multiplayer systems</strong> using Photon Quantum in Unity — ensuring frame-perfect simulation sync.</li>
+          <li>Solely built a <strong>1v1 strategy game</strong> with bot + real-player matchmaking, AI logic, and Firebase analytics.</li>
+          <li>Designed scalable gameplay systems under strict platform and performance constraints.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item fade-up">
+      <div class="exp-meta">
+        <div class="exp-period">Nov 2021 – Jun 2025</div>
+        <div class="exp-company">Studio Sirah</div>
+        <div class="exp-type">Full-time · 3.5 yrs</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-role">Unity Game Developer → Senior Engineer</div>
+        <div class="exp-sub">Kurukshetra: Ascension · Unity · Nakama · Golang</div>
+        <ul class="exp-points">
+          <li>Progressed to <strong>Senior Gameplay Engineer</strong>, overseeing the full programming stack and mentoring two junior developers.</li>
+          <li>Refactored core systems: <strong>card architecture, deck systems, match flow, and progression</strong>.</li>
+          <li>Designed and implemented <strong>store, monetization pipeline, live event system, and inbox system</strong>.</li>
+          <li>Reduced mobile build size from <strong>1 GB → 450 MB</strong> using Unity Addressables and downloadable bundles.</li>
+          <li>Improved load times and runtime performance via asset batching, draw call optimization, and asset restructuring.</li>
+          <li>Stabilized multiplayer on <strong>low-end Android devices</strong>; maintained matchmaking and backend integrations.</li>
+          <li>Built <strong>CI/CD pipeline</strong> and owned iOS deployment; served as <strong>Release Master</strong> for bi-monthly updates.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item fade-up">
+      <div class="exp-meta">
+        <div class="exp-period">2020 – 2021</div>
+        <div class="exp-company">Zygobots</div>
+        <div class="exp-type">Internship</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-role">Game Developer Intern</div>
+        <div class="exp-sub">Unity · 3D Level Design · QA</div>
+        <ul class="exp-points">
+          <li>Developed gameplay mechanics and <strong>3D level design</strong> in Unity.</li>
+          <li>Conducted QA testing and gameplay balancing across multiple build cycles.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item fade-up">
+      <div class="exp-meta">
+        <div class="exp-period">2016 – 2018</div>
+        <div class="exp-company">Zoho Corporation</div>
+        <div class="exp-type">Full-time</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-role">Software Engineer</div>
+        <div class="exp-sub">Frontend & Backend Systems</div>
+        <ul class="exp-points">
+          <li>Developed and optimized scalable <strong>frontend and backend systems</strong> for production-grade SaaS products.</li>
+          <li>Implemented performance improvements and feature enhancements across live product environments.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">Projects</div>
+  <h2 class="section-title">Games I've <em style="font-family:var(--serif);font-style:italic;color:var(--accent);">built</em>.</h2>
+
+  <div class="projects-grid">
+
+    <div class="project-card featured fade-up">
+      <div class="project-header">
+        <span class="project-num">01 — Featured</span>
+        <div class="project-platforms">
+          <span class="platform-badge">iOS</span>
+          <span class="platform-badge">Android</span>
+          <span class="platform-badge">Steam</span>
+        </div>
+      </div>
+      <div class="project-title">Kurukshetra: Ascension</div>
+      <div class="project-engine">Unity · Nakama · Golang · Multiplayer Card Battler</div>
+      <p class="project-desc">
+        A live-service multiplayer 2D card battler built on Indian mythology. Full-stack ownership across Unity gameplay and Golang server. Systems include card architecture, deck builder, matchmaking, live events, IAP, CI/CD pipeline, and mobile performance optimization (1 GB → 450 MB build). Published by Studio Sirah on Play Store, App Store, and Steam.
+      </p>
+      <div class="project-links">
+        <a href="https://play.google.com/store/apps/details?id=com.StudioSirah.KurukshetraAscension" target="_blank" class="project-link">Play Store</a>
+        <a href="https://apps.apple.com/in/app/kurukshetra-ascension/id1601430224" target="_blank" class="project-link">App Store</a>
+        <a href="https://store.steampowered.com/app/1857540/Kurukshetra_Ascension/" target="_blank" class="project-link">Steam</a>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="project-header">
+        <span class="project-num">02</span>
+        <div class="project-platforms">
+          <span class="platform-badge blue">Steam</span>
+        </div>
+      </div>
+      <div class="project-title">Psych</div>
+      <div class="project-engine">Unity · Systems & Gameplay Programming</div>
+      <p class="project-desc">
+        An RPG on Steam featuring physics-based weapon mechanics — attracting objects and weapons to the player's hand as core gameplay. Programmed boss AI movements, attack strategies, and animation state machines.
+      </p>
+      <div class="project-links">
+        <a href="https://store.steampowered.com/app/1409370/Psych/" target="_blank" class="project-link">Steam</a>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="project-header">
+        <span class="project-num">03</span>
+        <div class="project-platforms">
+          <span class="platform-badge blue">Personal</span>
+        </div>
+      </div>
+      <div class="project-title">Vanara</div>
+      <div class="project-engine">Unreal Engine 5 · C++ · Blueprints · Open World RPG</div>
+      <p class="project-desc">
+        Sole programmer and assistant producer on a full-scale Unreal Engine RPG. Built player movement, combat, advanced AI and Boss AI systems, quest systems, HUD, and open-world environment. Wrote the full GDD and planned an 8-month production roadmap using MS Project + JIRA.
+      </p>
+      <div class="project-links">
+        <a href="https://kishoreb1996.wixsite.com/portfolio/projects-3" target="_blank" class="project-link">Details</a>
+        <a href="https://github.com/KishoreBoopathi/SampleCodes" target="_blank" class="project-link">GitHub</a>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <div class="project-header">
+        <span class="project-num">04</span>
+        <div class="project-platforms">
+          <span class="platform-badge blue">Meta Horizon</span>
+        </div>
+      </div>
+      <div class="project-title">1v1 Strategy Game</div>
+      <div class="project-engine">Photon Quantum · Unity · TypeScript · Firebase</div>
+      <p class="project-desc">
+        Sole developer of a deterministic 1v1 strategy game with bot + real-player matchmaking. Built with Photon Quantum for frame-perfect simulation, with Firebase analytics and Meta Horizon platform integration.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- EDUCATION + LOCATION -->
+<section style="padding: 100px 48px;">
+  <div class="section-label">Education</div>
+  <h2 class="section-title" style="margin-bottom:40px;">Academic <em style="font-family:var(--serif);font-style:italic;color:var(--accent);">foundation</em>.</h2>
+  <div class="edu-cards" style="max-width:700px;">
+    <div class="edu-card fade-up">
+      <div class="edu-icon">🎓</div>
+      <div>
+        <div class="edu-degree">M.S. Game Design</div>
+        <div class="edu-school">Full Sail University</div>
+        <div class="edu-year">Class of 2020</div>
+      </div>
+    </div>
+    <div class="edu-card fade-up">
+      <div class="edu-icon">💻</div>
+      <div>
+        <div class="edu-degree">B.Tech Information Technology</div>
+        <div class="edu-school">PSG College of Technology</div>
+        <div class="edu-year">2013 – 2017</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="bg-text">CONTACT</div>
+  <div class="contact-inner">
+    <div class="section-label" style="justify-content:center">Get In Touch</div>
+    <h2 class="section-title">Let's build something<br><em style="font-family:var(--serif);font-style:italic;color:var(--accent);">extraordinary</em>.</h2>
+    <a href="mailto:kishore.b.1996@gmail.com" class="contact-email">kishore.b.1996@gmail.com</a>
+    <div class="contact-links">
+      <a href="https://www.linkedin.com/in/kishore-boopathi-1242bb87/" target="_blank" class="contact-link">LinkedIn</a>
+      <a href="https://github.com/KishoreBoopathi/SampleCodes" target="_blank" class="contact-link">GitHub</a>
+    </div>
+    <div class="contact-phone">+91 94432 33771 · Bangalore, Karnataka</div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Kishore Boopathi</span>
+  <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;">SENIOR GAMEPLAY ENGINEER · UNITY · UNREAL</span>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '6px';
+      cursor.style.height = '6px';
+      ring.style.width = '60px';
+      ring.style.height = '60px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      ring.style.width = '40px';
+      ring.style.height = '40px';
+    });
+  });
+
+  // Scroll fade-in
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+  // Hero text animation
+  const heroName = document.querySelector('.hero-name');
+  if (heroName) {
+    heroName.style.opacity = '0';
+    heroName.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+      heroName.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+      heroName.style.opacity = '1';
+      heroName.style.transform = 'translateY(0)';
+    }, 100);
+  }
+</script>
+</body>
+</html>
