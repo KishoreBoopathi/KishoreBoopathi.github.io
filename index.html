@@ -271,6 +271,44 @@
   .proj-item.hero-proj .proj-link { color: rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.25); }
   .proj-item.hero-proj .proj-link:hover { color: var(--white); border-color: var(--white); }
 
+  /* ── PERSONAL PROJECTS ── */
+  .personal-proj-list { display: flex; flex-direction: column; gap: 2px; }
+  .personal-proj-item {
+    background: var(--white); border: 1px solid var(--line);
+    padding: 20px 24px;
+    display: flex; justify-content: space-between; align-items: start;
+    gap: 20px; transition: border-color 0.15s;
+  }
+  .personal-proj-item:hover { border-color: #bbb; }
+  .personal-proj-left { flex: 1; }
+  .personal-proj-name {
+    font-size: 14px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--ink); margin-bottom: 3px;
+  }
+  .personal-proj-stack {
+    font-family: var(--mono); font-size: 11px; color: var(--faint);
+    letter-spacing: 0.04em; margin-bottom: 8px;
+  }
+  .personal-proj-desc {
+    font-size: 13px; color: var(--mid); line-height: 1.65;
+    max-width: 540px;
+  }
+  .personal-proj-right {
+    display: flex; flex-direction: column; align-items: flex-end;
+    gap: 8px; flex-shrink: 0;
+  }
+  .personal-proj-tag {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 2px 8px; border-radius: 100px;
+    background: var(--tag-bg); color: var(--mid); border: 1px solid var(--line);
+  }
+  .personal-proj-link {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em;
+    color: var(--faint); border-bottom: 1px solid var(--line);
+    padding-bottom: 1px; transition: color 0.15s, border-color 0.15s;
+  }
+  .personal-proj-link:hover { color: var(--ink); border-color: var(--ink); }
+
   /* ── SKILLS ── */
   .skill-group-label {
     font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
@@ -355,6 +393,8 @@
     #contact .container { flex-direction: column; align-items: flex-start; }
     .stat-row { gap: 8px; }
     .edu-item { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .personal-proj-item { flex-direction: column; }
+    .personal-proj-right { align-items: flex-start; }
   }
 </style>
 </head>
@@ -370,6 +410,7 @@
     <a href="#strengths">Strengths</a>
     <a href="#experience">Experience</a>
     <a href="#projects">Projects</a>
+    <a href="#personal">Personal</a>
     <a href="#skills">Skills</a>
   </div>
   <a href="#" onclick="window.location='mai'+'lto:'+'kishore.b.1996'+'@'+'gmail.com';return false;" class="btn nav-cta">Contact Me</a>
@@ -394,7 +435,7 @@
     <div class="hero-actions">
       <a href="#experience" class="btn btn-dark">View Experience →</a>
       <a href="https://www.linkedin.com/in/kishore-boopathi-1242bb87/" target="_blank" class="btn btn-outline">LinkedIn ↗</a>
-      <a href="https://github.com/KishoreBoopathi/SampleCodes" target="_blank" class="btn btn-outline">GitHub ↗</a>
+      <a href="https://github.com/KishoreBoopathi" target="_blank" class="btn btn-outline">GitHub ↗</a>
     </div>
   </div>
 </section>
@@ -611,10 +652,10 @@
   </div>
 </section>
 
-<!-- PROJECTS -->
+<!-- SHIPPED PROJECTS -->
 <section id="projects">
   <div class="container">
-    <div class="sec-label">Shipped work</div>
+    <div class="sec-label">Shipped projects</div>
     <div class="proj-list">
 
       <!-- Kurukshetra: Ascension — featured -->
@@ -650,7 +691,6 @@
         </div>
       </div>
 
-      <!-- Scoop Up -->
       <div class="proj-item grey-proj fade" style="grid-template-columns:1fr;">
         <div>
           <div class="proj-name">Scoop Up!</div>
@@ -663,7 +703,6 @@
         </div>
       </div>
 
-      <!-- Tiger Goat -->
       <div class="proj-item grey-proj fade" style="grid-template-columns:1fr;">
         <div>
           <div class="proj-name">Tiger Goat</div>
@@ -675,7 +714,6 @@
         </div>
       </div>
 
-      <!-- Psych -->
       <div class="proj-item fade" style="grid-template-columns:1fr;">
         <div>
           <div class="proj-name">Psych</div>
@@ -688,16 +726,78 @@
         </div>
       </div>
 
+    </div>
+  </div>
+</section>
+
+<!-- PERSONAL PROJECTS -->
+<section id="personal">
+  <div class="container">
+    <div class="sec-label">Personal projects</div>
+    <div class="personal-proj-list">
+
       <!-- Vanara -->
-      <div class="proj-item fade" style="grid-template-columns:1fr;">
-        <div>
-          <div class="proj-name">Vanara — Open World RPG</div>
-          <div class="proj-stack">Unreal Engine 5 · C++ · Blueprints</div>
-          <div class="proj-desc">Personal project. Sole programmer and assistant producer. Built player movement, combat, advanced AI, Boss AI systems, quest systems and HUD from scratch. Wrote full GDD and planned 8-month production roadmap using MS Project + JIRA.</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px;">
-            <div class="proj-links"><a href="https://github.com/KishoreBoopathi/SampleCodes" target="_blank" class="proj-link">GitHub ↗</a></div>
-            <div class="proj-platforms"><span class="plat">Personal</span></div>
-          </div>
+      <div class="personal-proj-item fade">
+        <div class="personal-proj-left">
+          <div class="personal-proj-name">Vanara — Open World Action RPG</div>
+          <div class="personal-proj-stack">Unreal Engine 5 · C++ · Blueprints</div>
+          <div class="personal-proj-desc">Sole programmer. Built player movement, combat, advanced AI, boss AI, quest systems and HUD from scratch in C++. Migrating and refactoring systems from UE4 to UE5 — active development.</div>
+        </div>
+        <div class="personal-proj-right">
+          <span class="personal-proj-tag">UE5 · C++</span>
+          <a href="https://github.com/KishoreBoopathi/unreal-systems-cpp" target="_blank" class="personal-proj-link">GitHub ↗</a>
+        </div>
+      </div>
+
+      <!-- Modular Weapon System -->
+      <div class="personal-proj-item fade">
+        <div class="personal-proj-left">
+          <div class="personal-proj-name">Modular Weapon Attachment System</div>
+          <div class="personal-proj-stack">Unity · C# · Interface-Driven Architecture</div>
+          <div class="personal-proj-desc">Runtime weapon customization via a socket-based attachment model. Interface-driven polymorphism keeps the Gun class fully decoupled — adding new attachment types requires zero changes to core weapon logic.</div>
+        </div>
+        <div class="personal-proj-right">
+          <span class="personal-proj-tag">Unity · C#</span>
+          <a href="https://github.com/KishoreBoopathi/ModularWeaponSystem" target="_blank" class="personal-proj-link">GitHub ↗</a>
+        </div>
+      </div>
+
+      <!-- Quest System -->
+      <div class="personal-proj-item fade">
+        <div class="personal-proj-left">
+          <div class="personal-proj-name">Quest System</div>
+          <div class="personal-proj-stack">Unity · C# · Event-Driven Architecture</div>
+          <div class="personal-proj-desc">Lightweight quest framework built on a generic event bus. Gameplay systems fire named events; quests listen and evaluate progress. No direct coupling between quest logic and the systems that trigger it.</div>
+        </div>
+        <div class="personal-proj-right">
+          <span class="personal-proj-tag">Unity · C#</span>
+          <a href="https://github.com/KishoreBoopathi/QuestSystem" target="_blank" class="personal-proj-link">GitHub ↗</a>
+        </div>
+      </div>
+
+      <!-- Space Shooter -->
+      <div class="personal-proj-item fade">
+        <div class="personal-proj-left">
+          <div class="personal-proj-name">SpaceEx — 2D Space Shooter</div>
+          <div class="personal-proj-stack">Unity · C# · Object Pooling · Wave Spawning</div>
+          <div class="personal-proj-desc">Complete arcade shooter with data-driven wave spawning, object pooling, composite enemy AI with homing variants, and a full game loop from splash to credits.</div>
+        </div>
+        <div class="personal-proj-right">
+          <span class="personal-proj-tag">Unity · C#</span>
+          <a href="https://github.com/KishoreBoopathi/SpaceEx" target="_blank" class="personal-proj-link">GitHub ↗</a>
+        </div>
+      </div>
+
+      <!-- Card Game -->
+      <div class="personal-proj-item fade">
+        <div class="personal-proj-left">
+          <div class="personal-proj-name">Networked Card Game</div>
+          <div class="personal-proj-stack">Unity · C# · Mirror Networking</div>
+          <div class="personal-proj-desc">Two-player networked card game with server-authoritative deal and play flow. Authority-gated player actions, hidden-information card state, and server-side spawn with client-side UI placement.</div>
+        </div>
+        <div class="personal-proj-right">
+          <span class="personal-proj-tag">Unity · C#</span>
+          <a href="https://github.com/KishoreBoopathi/CardGame" target="_blank" class="personal-proj-link">GitHub ↗</a>
         </div>
       </div>
 
@@ -716,8 +816,8 @@
           <div class="skill-group-label">Engines</div>
           <div class="skills-bars">
             <div class="skill-bar-row"><span class="skill-bar-name">Unity</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="93%"></div></div><span class="skill-bar-level">Expert</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Unreal Engine 5</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="78%"></div></div><span class="skill-bar-level">Advanced</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Meta Horizon</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="70%"></div></div><span class="skill-bar-level">Pro</span></div>
+            <div class="skill-bar-row"><span class="skill-bar-name">Unreal Engine 5</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="85%"></div></div><span class="skill-bar-level">Advanced</span></div>
+            <div class="skill-bar-row"><span class="skill-bar-name">Meta Horizon</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="80%"></div></div><span class="skill-bar-level">Advanced</span></div>
           </div>
         </div>
         <div class="skills-col-group">
@@ -801,7 +901,7 @@
 </section>
 
 <footer>
-  <span>© 2025 Kishore Boopathi</span>
+  <span>© 2026 Kishore Boopathi</span>
   <span>Senior Gameplay Engineer · Bangalore</span>
 </footer>
 
@@ -819,3 +919,5 @@
     document.querySelectorAll('.skill-bar-fill').forEach(b => obs.observe(b));
   });
 </script>
+</body>
+</html>
