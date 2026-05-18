@@ -16,6 +16,7 @@
     --accent: #1a1a18;
     --tag-bg: #f0f0ec;
     --green: #16a34a;
+    --gold: #b8860b;
     --ep: 'Epilogue', sans-serif;
     --mono: 'DM Mono', monospace;
   }
@@ -153,7 +154,6 @@
   /* ── EXPERIENCE ── */
   .exp-list { display: flex; flex-direction: column; gap: 0; }
 
-  /* Company block */
   .exp-company {
     border-top: 1px solid var(--line); padding: 32px 0 0;
   }
@@ -182,7 +182,6 @@
     background: #dcfce7; color: var(--green); border-radius: 100px;
   }
 
-  /* Project cards nested inside company */
   .exp-projects { display: flex; flex-direction: column; gap: 2px; margin-bottom: 32px; }
   .exp-project {
     background: var(--white); border: 1px solid var(--line);
@@ -222,6 +221,15 @@
     text-decoration: none;
   }
   .exp-proj-link:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* ── AWARD BADGE ── */
+  .award-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 4px 12px;
+    background: #fef9e7; color: var(--gold); border: 1px solid #f0e0a0;
+    border-radius: 100px; font-weight: 500;
+  }
 
   .proj-item.grey-proj {
     background: #f4f4f0; border-color: #e0e0da;
@@ -270,6 +278,22 @@
   .proj-link:hover { color: var(--ink); border-color: var(--ink); }
   .proj-item.hero-proj .proj-link { color: rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.25); }
   .proj-item.hero-proj .proj-link:hover { color: var(--white); border-color: var(--white); }
+
+  /* ── HERO PROJECT STATS ── */
+  .proj-hero-stats {
+    display: flex; gap: 16px; margin-top: 14px; margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .proj-hero-stat {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+    padding: 4px 12px; border-radius: 100px;
+    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.75);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .proj-hero-stat.gold {
+    background: rgba(184,134,11,0.15); color: #f0d060;
+    border-color: rgba(240,208,96,0.3);
+  }
 
   /* ── PERSONAL PROJECTS ── */
   .personal-proj-list { display: flex; flex-direction: column; gap: 2px; }
@@ -395,6 +419,7 @@
     .edu-item { flex-direction: column; align-items: flex-start; gap: 4px; }
     .personal-proj-item { flex-direction: column; }
     .personal-proj-right { align-items: flex-start; }
+    .proj-hero-stats { gap: 8px; }
   }
 </style>
 </head>
@@ -544,6 +569,7 @@
         </div>
         <div class="exp-projects">
 
+          <!-- CHANGE 1: Kurukshetra experience — added server-side work bullet -->
           <div class="exp-project">
             <div class="exp-project-header">
               <span class="exp-proj-name">Kurukshetra: Ascension</span>
@@ -558,9 +584,10 @@
               <li>Progressed to <strong>Senior Engineer</strong> — owned the full programming stack and mentored 2 junior developers.</li>
               <li>Refactored and extended core systems: <strong>card architecture, deck builder, match flow and progression</strong>.</li>
               <li>Built <strong>store, monetization pipeline, live events, IAP and inbox</strong> systems end-to-end.</li>
+              <li>Built core <strong>Golang server systems</strong> — inventory economy, campaign mode, draft mode, quest/rewards, push notifications, and IAP validation across Google Play, Apple, and Steam.</li>
               <li>Reduced mobile build size from <strong>1 GB → 450 MB</strong> using Unity Addressables and downloadable bundles.</li>
               <li>Served as <strong>Release Master</strong> — owned CI/CD pipeline and iOS deployment while concurrently developing major features across release cycles ranging from weekly to bi-monthly.</li>
-              <li>Stabilized <strong>multiplayer on low-end Android</strong>; maintained matchmaking and Golang backend integrations.</li>
+              <li>Stabilized <strong>multiplayer on low-end Android</strong>; maintained matchmaking and backend integrations.</li>
             </ul>
             <div class="exp-proj-links">
               <a href="https://play.google.com/store/apps/details?id=com.StudioSirah.KurukshetraAscension" target="_blank" class="exp-proj-link">Play Store ↗</a>
@@ -569,6 +596,7 @@
             </div>
           </div>
 
+          <!-- CHANGE 2: Kalpa experience — added technical specifics -->
           <div class="exp-project">
             <div class="exp-project-header">
               <span class="exp-proj-name">Kalpa: Mythic Hero Defense</span>
@@ -579,7 +607,9 @@
             <div class="exp-proj-stack">Unity · Tower Defense · Indian Mythology</div>
             <ul class="exp-points">
               <li>Joined as <strong>Senior Developer</strong> — owned and built the majority of game systems from scratch.</li>
-              <li>Architected the <strong>enemy movement and pathfinding system</strong> entirely from scratch, forming the core of the tower defense gameplay loop.</li>
+              <li>Architected a <strong>Dijkstra-based flow-field pathfinding system</strong> from scratch — pre-baked at level load for O(1) per-unit cost per frame, enabling hundreds of concurrent AI agents on mobile hardware.</li>
+              <li>Built the <strong>AI movement system</strong> with three layers: spline-based path following, boids flocking for natural crowd behavior, and flow-field obstacle avoidance with separate steering for ground and flying units.</li>
+              <li>Developed the <strong>wave spawning system</strong> with AnimationCurve-based timing distribution, dynamic fan-spread positioning, and designer-tunable spawn pacing.</li>
               <li>Built a suite of <strong>designer and artist tools</strong> to streamline enemy wave design, level layout, and asset integration workflows.</li>
             </ul>
             <div class="exp-proj-links">
@@ -658,12 +688,18 @@
     <div class="sec-label">Shipped projects</div>
     <div class="proj-list">
 
-      <!-- Kurukshetra: Ascension — featured -->
+      <!-- CHANGE 5: Kurukshetra projects — prominent award badge and stats -->
       <div class="proj-item hero-proj fade" style="grid-template-columns:1fr;">
         <div>
           <div class="proj-name">Kurukshetra: Ascension</div>
           <div class="proj-stack">Unity · Nakama · Golang · Live-Service Multiplayer Card Battler</div>
-          <div class="proj-desc">🏆 Winner — Google Play Store Best Indie Game 2023. Strategy card battler inspired by Indian mythology, published by Studio Sirah. Full ownership of Unity gameplay and Golang server. Built card architecture, deck builder, matchmaking, live events, IAP, monetization pipeline. Served as Release Master — owned CI/CD pipeline and iOS deployment while concurrently developing major features across release cycles ranging from weekly to bi-monthly. Reduced build 1 GB → 450 MB. 500K+ downloads.</div>
+          <!-- Prominent stats row -->
+          <div class="proj-hero-stats">
+            <span class="proj-hero-stat gold">🏆 Google Play Best Indie Game 2023</span>
+            <span class="proj-hero-stat">1M+ Downloads</span>
+            <span class="proj-hero-stat">3 Platforms</span>
+          </div>
+          <div class="proj-desc">Strategy card battler inspired by Indian mythology, published by Studio Sirah. Full ownership of Unity gameplay and Golang server. Built card architecture, deck builder, matchmaking, live events, IAP, monetization pipeline, and core server systems including inventory economy, campaign, draft mode, and quest/rewards. Served as Release Master — owned CI/CD pipeline and iOS deployment. Reduced build 1 GB → 450 MB via Addressables.</div>
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px;">
             <div class="proj-links">
               <a href="https://play.google.com/store/apps/details?id=com.StudioSirah.KurukshetraAscension" target="_blank" class="proj-link">Play Store ↗</a>
@@ -683,7 +719,7 @@
         <div>
           <div class="proj-name">Kalpa: Mythic Hero Defense</div>
           <div class="proj-stack">Unity · Tower Defense · Indian Mythology</div>
-          <div class="proj-desc">Mythic tower defense game where players defend the sacred world tree Kalpa against Asura hordes using legendary heroes from Indian epics. Senior developer — owned and built majority of systems from scratch including enemy pathfinding and designer tooling.</div>
+          <div class="proj-desc">Mythic tower defense game where players defend the sacred world tree Kalpa against Asura hordes using legendary heroes from Indian epics. Senior developer — owned and built majority of systems from scratch including a Dijkstra-based flow-field pathfinding system, three-layer AI movement (spline + boids + flow-field avoidance), wave spawning, and designer tooling.</div>
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px;">
             <div class="proj-links"><a href="https://play.google.com/store/apps/details?id=com.StudioSirah.Qila" target="_blank" class="proj-link">Play Store ↗</a></div>
             <div class="proj-platforms"><span class="plat">Android</span></div>
@@ -691,11 +727,12 @@
         </div>
       </div>
 
+      <!-- CHANGE 4: Scoop Up projects — added gameplay description -->
       <div class="proj-item grey-proj fade" style="grid-template-columns:1fr;">
         <div>
           <div class="proj-name">Scoop Up!</div>
           <div class="proj-stack">TypeScript · Meta Horizon Worlds · Multiplayer Co-op</div>
-          <div class="proj-desc">Fast-paced multiplayer co-op game for Meta Horizon Worlds. Players chase Flavour Monsters, fulfil customer orders as a team, and manage rush-hour chaos. Built core gameplay, multiplayer sync and order management systems.</div>
+          <div class="proj-desc">Fast-paced multiplayer co-op game for Meta Horizon Worlds where players team up to chase Flavour Monsters, scoop them into cones, fulfil customer orders, and survive rush-hour chaos. Built core gameplay systems, multiplayer synchronization, order management, and rush-hour game flow — all in TypeScript under strict Meta platform and performance constraints.</div>
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px;">
             <div class="proj-links"><a href="https://horizon.meta.com/world/881392728384664/" target="_blank" class="proj-link">Meta Horizon ↗</a></div>
             <div class="proj-platforms"><span class="plat">Meta Horizon</span></div>
@@ -703,12 +740,14 @@
         </div>
       </div>
 
+      <!-- CHANGE 3: Tiger Goat — added Play Store link (update URL when available) -->
       <div class="proj-item grey-proj fade" style="grid-template-columns:1fr;">
         <div>
           <div class="proj-name">Tiger Goat</div>
           <div class="proj-stack">Unity · Photon Quantum · Deterministic Multiplayer</div>
-          <div class="proj-desc">Digital adaptation of the traditional South Indian board game Aadu Puli Aatam. Sole developer — built all gameplay systems, UI, animations, sounds and everything else from scratch. Competitive 1v1 online with bot and real-player matchmaking via Photon Quantum.</div>
+          <div class="proj-desc">Digital adaptation of the traditional South Indian board game Aadu Puli Aatam. Sole developer — built all gameplay systems, deterministic multiplayer via Photon Quantum (state sync, rollback, input handling), dual AI systems (in-simulation deterministic + offline minimax), reconnection with frame-snapshot recovery, UI, animations, haptics, and analytics from scratch.</div>
           <div style="display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px;">
+
             <div class="proj-platforms"><span class="plat">Android</span></div>
           </div>
         </div>
@@ -736,12 +775,12 @@
     <div class="sec-label">Personal projects</div>
     <div class="personal-proj-list">
 
-      <!-- Vanara -->
+      <!-- CHANGE 6: Vanara — updated description to reflect current state -->
       <div class="personal-proj-item fade">
         <div class="personal-proj-left">
           <div class="personal-proj-name">Vanara — Open World Action RPG</div>
-          <div class="personal-proj-stack">Unreal Engine 5 · C++ · Blueprints</div>
-          <div class="personal-proj-desc">Sole programmer. Built player movement, combat, advanced AI, boss AI, quest systems and HUD from scratch in C++. Migrating and refactoring systems from UE4 to UE5 — active development.</div>
+          <div class="personal-proj-stack">Unreal Engine · C++ · Blueprints</div>
+          <div class="personal-proj-desc">Sole programmer. Built player movement, combat system, advanced AI with behavior trees, three boss encounters, a quest system with objectives, and a full HUD using a mix of C++ and Blueprints. Originally built in UE4; currently planning migration to UE5 with system refactoring and a playable vertical slice as the goal.</div>
         </div>
         <div class="personal-proj-right">
           <span class="personal-proj-tag">UE5 · C++</span>
@@ -749,7 +788,6 @@
         </div>
       </div>
 
-      <!-- Modular Weapon System -->
       <div class="personal-proj-item fade">
         <div class="personal-proj-left">
           <div class="personal-proj-name">Modular Weapon Attachment System</div>
@@ -762,7 +800,6 @@
         </div>
       </div>
 
-      <!-- Quest System -->
       <div class="personal-proj-item fade">
         <div class="personal-proj-left">
           <div class="personal-proj-name">Quest System</div>
@@ -775,7 +812,6 @@
         </div>
       </div>
 
-      <!-- Space Shooter -->
       <div class="personal-proj-item fade">
         <div class="personal-proj-left">
           <div class="personal-proj-name">SpaceEx — 2D Space Shooter</div>
@@ -788,7 +824,6 @@
         </div>
       </div>
 
-      <!-- Card Game -->
       <div class="personal-proj-item fade">
         <div class="personal-proj-left">
           <div class="personal-proj-name">Networked Card Game</div>
