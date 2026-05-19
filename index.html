@@ -113,18 +113,23 @@ body::before {
   letter-spacing: .1em; text-transform: uppercase;
 }
 .footer-links {
-  display: flex; gap: 28px; align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: center;
+  gap: 0;
 }
 .footer-link {
   font-family: 'Inter', sans-serif;
   font-size: 11px; font-weight: 500;
-  letter-spacing: .12em; text-transform: uppercase;
+  letter-spacing: .1em; text-transform: uppercase;
   color: #aaa; text-decoration: none;
-  padding-bottom: 2px;
-  border-bottom: 1px solid transparent;
-  transition: color .2s, border-color .2s;
+  display: flex; align-items: center; gap: 7px;
+  padding: 0 28px;
+  border-right: 1px solid #2a2a2a;
+  transition: color .2s;
 }
-.footer-link:hover { color: #fff; border-bottom-color: #ff5733; }
+.footer-link:first-child { padding-left: 0; }
+.footer-link:last-child { border-right: none; padding-right: 0; }
+.footer-link:hover { color: #fff; }
+.footer-link svg { flex-shrink: 0; transition: color .2s; }
 .footer-right {
   display: flex; align-items: center; justify-content: flex-end;
 }
@@ -142,9 +147,10 @@ body::before {
 /* ═══ VIEWPORT ═════════════════════════ */
 #viewport { position: fixed; top: 48px; bottom: 72px; left: 0; right: 0; overflow: hidden; z-index: 1; }
 .page {
-  position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden;
+  position: absolute; inset: 0; overflow-y: scroll; overflow-x: hidden;
   opacity: 0; pointer-events: none; transform: translateY(10px);
   transition: opacity .3s ease, transform .3s ease;
+  -webkit-overflow-scrolling: touch;
 }
 .page.active { opacity: 1; pointer-events: all; transform: translateY(0); }
 .page.exit { opacity: 0; transform: translateY(-10px); transition: opacity .2s ease, transform .2s ease; }
@@ -157,6 +163,7 @@ body::before {
 .sec-label {
   font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
   display: flex; align-items: center; gap: 8px; color: var(--outline);
+  margin-bottom: 28px;
 }
 .sec-label span { color: #ff5733; }
 .sec-label::before { content: ''; display: inline-block; width: 1px; height: 13px; background: #ff5733; }
@@ -166,7 +173,7 @@ body::before {
 /* ═══ HOME ═════════════════════════════ */
 #page-home {
   background: #0a0a0a;
-  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   --h-accent: #ff5733;
   --h-muted:  #a1a1a1;
   --h-text:   #ffffff;
@@ -176,6 +183,8 @@ body::before {
   max-width: 1200px;
   margin: 0 auto;
   padding: 48px 48px 64px;
+  position: relative;
+  z-index: 2;
 }
 
 /* ── Hero ── */
@@ -550,15 +559,6 @@ body::before {
 .edu-school { font-family: 'Inter', sans-serif; font-size: 11px; color: #555; }
 
 /* ═══ WORK TIMELINE ════════════════════ */
-.wk-sec-label {
-  font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
-  letter-spacing: .18em; text-transform: uppercase;
-  display: flex; align-items: center; gap: 8px; color: #555;
-  margin-bottom: 28px;
-}
-.wk-sec-label span { color: #ff5733; }
-.wk-sec-label::before { content: ''; display: inline-block; width: 1px; height: 13px; background: #ff5733; }
-
 .wk-grid {
   display: grid;
   grid-template-columns: 1fr 300px;
@@ -669,11 +669,11 @@ body::before {
 .wk-sidebar-section {}
 .wk-sidebar-heading {
   font-family: 'Inter', sans-serif;
-  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: #fff; margin-bottom: 20px;
+  font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: #666; margin-bottom: 20px;
   display: flex; align-items: center; gap: 8px;
 }
-.wk-sidebar-heading::before { content: ''; width: 2px; height: 14px; background: #ff5733; display: inline-block; }
+.wk-sidebar-heading::before { content: ''; width: 1px; height: 13px; background: #ff5733; display: inline-block; }
 .wk-skill-cat {
   font-family: 'Inter', sans-serif;
   font-size: 10px; color: #444;
@@ -686,9 +686,12 @@ body::before {
 }
 .wk-skill-row:last-of-type { border-bottom: none; }
 .wk-sk-name { font-family: 'Inter', sans-serif; font-size: 13px; color: #fff; font-weight: 400; }
-.wk-edu-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
-.wk-edu-degree { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 3px; }
-.wk-edu-school { font-family: 'Inter', sans-serif; font-size: 11px; color: #555; }
+.wk-edu-row { display: flex; flex-direction: column; gap: 8px; }
+.wk-edu-item { border: 1px solid #333; border-radius: 6px; padding: 12px 16px; background: #111; }
+.wk-edu-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.wk-edu-degree { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: #fff; }
+.wk-edu-year { font-family: 'Inter', sans-serif; font-size: 11px; color: #555; letter-spacing: .04em; }
+.wk-edu-school { font-family: 'Inter', sans-serif; font-size: 11px; color: #666; }
 
 /* ═══ RESPONSIVE ════════════════════════ */
 @media (max-width: 860px) {
@@ -863,16 +866,12 @@ body::before {
 <div class="page" id="page-about">
 <div class="inner">
 
-  <div class="wk-sec-label"><span>§ 02</span> · About</div>
-
   <div class="wk-grid">
 
     <!-- LEFT: timeline -->
     <div class="wk-timeline">
 
-      <p class="wk-lead">Started in enterprise SaaS at Zoho, fell into games at Zygobots, grew up at Studio Sirah — developer to senior engineer in a single tour, owning gameplay, server, and CI/CD as Release Master.</p>
-
-      <div class="wk-term">$ tail -f career.log</div>
+      <div class="sec-label">Experience</div>
 
       <!-- Flecks Labs -->
       <div class="wk-company-row">
@@ -1005,11 +1004,31 @@ body::before {
 
     </div><!-- /timeline -->
 
-    <!-- RIGHT: proficiency sidebar -->
+    <!-- RIGHT: sidebar -->
     <div class="wk-sidebar">
 
       <div class="wk-sidebar-section">
-        <div class="wk-sidebar-heading">| Proficiency</div>
+        <div class="sec-label">Education</div>
+        <div class="wk-edu-row">
+          <div class="wk-edu-item">
+            <div class="wk-edu-top">
+              <div class="wk-edu-degree">M.S. Game Design</div>
+              <div class="wk-edu-year">2020</div>
+            </div>
+            <div class="wk-edu-school">Full Sail University</div>
+          </div>
+          <div class="wk-edu-item">
+            <div class="wk-edu-top">
+              <div class="wk-edu-degree">B.Tech IT</div>
+              <div class="wk-edu-year">2013 – 2017</div>
+            </div>
+            <div class="wk-edu-school">PSG College of Technology</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wk-sidebar-section" style="margin-top:40px;">
+        <div class="sec-label">Proficiency</div>
 
         <div class="wk-skill-cat">-- Engines --</div>
         <div class="wk-skill-row"><span class="wk-sk-name">Unity</span><span class="sk-lvl expert">Expert</span></div>
@@ -1047,20 +1066,6 @@ body::before {
         <div class="wk-skill-row"><span class="wk-sk-name">AWS</span><span class="sk-lvl adv">Advanced</span></div>
         <div class="wk-skill-row"><span class="wk-sk-name">Firebase</span><span class="sk-lvl pro">Pro</span></div>
         <div class="wk-skill-row"><span class="wk-sk-name">GameAnalytics</span><span class="sk-lvl pro">Pro</span></div>
-      </div>
-
-      <div class="wk-sidebar-section" style="margin-top:40px;">
-        <div class="wk-sidebar-heading">| Education</div>
-        <div class="wk-edu-row">
-          <div>
-            <div class="wk-edu-degree">M.S. Game Design</div>
-            <div class="wk-edu-school">Full Sail University · 2020</div>
-          </div>
-          <div>
-            <div class="wk-edu-degree">B.Tech IT</div>
-            <div class="wk-edu-school">PSG College · 2013–17</div>
-          </div>
-        </div>
       </div>
 
     </div><!-- /sidebar -->
@@ -1358,6 +1363,15 @@ document.addEventListener('keydown', e => {
 buildAccordion('shipped');
 buildAccordion('personal');
 setTimeout(runCounters, 200);
+
+// Forward wheel events from any child element to the active page scroller
+document.getElementById('viewport').addEventListener('wheel', function(e) {
+  const activePage = document.querySelector('.page.active');
+  if (activePage) {
+    activePage.scrollTop += e.deltaY;
+    e.preventDefault();
+  }
+}, { passive: false });
 </script>
 </body>
 </html>
