@@ -1,974 +1,1306 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kishore B — Senior Gameplay Engineer</title>
-<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Atkinson+Hyperlegible+Next:ital,wght@0,300;0,400;0,500;1,400&family=Space+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #fafaf8;
-    --white: #ffffff;
-    --ink: #111110;
-    --mid: #555552;
-    --faint: #a8a8a4;
-    --line: #e8e8e4;
-    --accent: #1a1a18;
-    --tag-bg: #f0f0ec;
-    --green: #16a34a;
-    --gold: #b8860b;
-    --ep: 'Epilogue', sans-serif;
-    --mono: 'DM Mono', monospace;
-  }
+/* ═══ TOKENS ═══════════════════════════ */
+:root {
+  --bg:          #0a0a0a;
+  --surf-low:    #111111;
+  --surf-mid:    #161616;
+  --surf-high:   #1e1e1e;
+  --on:          #ffffff;
+  --on-dim:      #a1a1a1;
+  --outline:     #666666;
+  --out-dim:     #333333;
+  --accent:      #ff5733;
+  --accent-dim:  rgba(255,87,51,0.15);
+  --border:      rgba(255,255,255,0.09);
+  --border-dim:  rgba(255,255,255,0.05);
+  --orange:      #ff5733;
+  --f-head: 'Instrument Serif', serif;
+  --f-body: 'Inter', sans-serif;
+  --f-code: 'Inter', sans-serif;
+}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+/* ═══ RESET ════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: var(--f-body); background: var(--bg); color: var(--on); -webkit-font-smoothing: antialiased; }
 
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--ep);
-    -webkit-font-smoothing: antialiased;
-    font-size: 15px;
-    line-height: 1.6;
-  }
+/* blueprint grid */
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none; z-index: 0;
+}
 
-  a { color: inherit; text-decoration: none; }
+/* ═══ TOPBAR ═══════════════════════════ */
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; height: 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 36px;
+  background: rgba(10,10,10,.96);
+  border-bottom: 1px solid var(--out-dim);
+  backdrop-filter: blur(14px); z-index: 200;
+}
+.brand { display: flex; align-items: center; cursor: pointer; text-decoration: none; }
+.brand-dot {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--orange);
+  display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;
+}
+.brand-dot-inner { width: 10px; height: 10px; border-radius: 50%; background: #fff; opacity: .6; }
+.brand-name { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--on); letter-spacing: .1em; text-transform: uppercase; }
+.brand-sep { font-family: 'Inter', sans-serif; font-size: 11px; color: var(--out-dim); margin: 0 8px; }
+.brand-role { font-family: 'Inter', sans-serif; font-size: 11px; color: var(--outline); letter-spacing: .08em; text-transform: uppercase; }
 
-  /* ── NAV ── */
-  nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(250,250,248,0.92);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 48px; height: 56px;
-  }
-  .nav-name {
-    font-size: 20px; font-weight: 800; letter-spacing: -0.03em;
-    color: var(--ink);
-  }
-  .nav-links { display: flex; gap: 32px; }
-  .nav-links a {
-    font-size: 13px; color: var(--faint); font-weight: 400;
-    transition: color 0.15s;
-  }
-  .nav-links a:hover { color: var(--ink); }
-  .nav-cta {
-    font-size: 13px; font-weight: 600;
-    background: var(--ink); color: var(--white);
-    padding: 7px 18px;
-    border-radius: 4px;
-    transition: opacity 0.15s;
-  }
-  .nav-cta:hover { opacity: 0.8; }
+.nav-right { display: flex; align-items: center; gap: 4px; }
+.nav-links { display: flex; align-items: stretch; height: 48px; list-style: none; margin-right: 20px; }
+.nav-links li { display: flex; align-items: center; }
+.nav-btn {
+  font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--outline); background: none; border: none;
+  border-bottom: 2px solid transparent; padding: 0 16px; height: 100%; cursor: pointer; transition: color .2s;
+}
+.nav-btn:hover { color: var(--on); }
+.nav-btn.active { color: var(--on); border-bottom-color: #ff5733; }
+.avail-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: #fff; background: #ff5733;
+  padding: 6px 16px; border-radius: 999px; cursor: default;
+}
+.pulse { width: 7px; height: 7px; background: #fff; border-radius: 50%; flex-shrink: 0;
+  animation: pulse 2.4s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);} }
 
-  /* ── LAYOUT ── */
-  .container { max-width: 860px; margin: 0 auto; padding: 0 48px; }
+/* ═══ BOTTOMBAR / FOOTER ═══════════════ */
+#bottombar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 72px;
+  background: rgba(10,10,10,.98);
+  border-top: 1px solid #1e1e1e;
+  backdrop-filter: blur(14px); z-index: 200;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 48px;
+  gap: 32px;
+}
+.footer-left {}
+.footer-hl {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic; font-weight: 400;
+  font-size: 22px; color: #fff; line-height: 1;
+  margin-bottom: 4px;
+}
+.footer-hl span { color: #ff5733; }
+.footer-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; color: #555;
+  letter-spacing: .1em; text-transform: uppercase;
+}
+.footer-links {
+  display: flex; gap: 32px; align-items: center; justify-content: center;
+}
+.footer-link {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: #555; text-decoration: none;
+  transition: color .2s;
+}
+.footer-link:hover { color: #fff; }
+.footer-right {
+  display: flex; align-items: center; justify-content: flex-end;
+}
+.footer-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  background: #ff5733; color: #fff; border: none;
+  padding: 10px 24px; border-radius: 999px;
+  cursor: pointer; text-decoration: none;
+  transition: filter .2s;
+  white-space: nowrap;
+}
+.footer-btn:hover { filter: brightness(1.12); }
+.footer-brand {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; color: #333;
+  letter-spacing: .08em; text-transform: uppercase;
+}
 
-  /* ── HERO ── */
-  #hero {
-    border-bottom: 1px solid var(--line);
-    padding: 80px 0 72px;
-  }
-  .hero-eyebrow {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
-    color: var(--green); text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-  .hero-eyebrow::before {
-    content: ''; width: 6px; height: 6px;
-    background: var(--green); border-radius: 50%;
-  }
-  h1 {
-    font-size: clamp(38px, 5.5vw, 60px);
-    font-weight: 800; letter-spacing: -0.04em;
-    line-height: 1.02; color: var(--ink);
-    margin-bottom: 20px;
-  }
-  h1 .dim { color: var(--faint); font-weight: 300; }
-  .hero-bio {
-    font-size: 17px; color: var(--mid); line-height: 1.7;
-    max-width: 580px; margin-bottom: 36px; font-weight: 400;
-  }
-  .hero-bio strong { color: var(--ink); font-weight: 600; }
+/* ═══ VIEWPORT ═════════════════════════ */
+#viewport { position: fixed; top: 48px; bottom: 72px; left: 0; right: 0; overflow: hidden; z-index: 1; }
+.page {
+  position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden;
+  opacity: 0; pointer-events: none; transform: translateY(10px);
+  transition: opacity .3s ease, transform .3s ease;
+}
+.page.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+.page.exit { opacity: 0; transform: translateY(-10px); transition: opacity .2s ease, transform .2s ease; }
+.page::-webkit-scrollbar { width: 3px; }
+.page::-webkit-scrollbar-thumb { background: var(--out-dim); }
+.inner { max-width: 1120px; margin: 0 auto; padding: 44px 36px 64px; position: relative; }
 
-  /* Stat pills */
-  .stat-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 36px; }
-  .stat-pill {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--white); border: 1px solid var(--line);
-    border-radius: 100px; padding: 7px 16px;
-    font-size: 13px; font-weight: 500; color: var(--ink);
-  }
-  .stat-pill span { font-weight: 700; }
-  .stat-pill .sep { color: var(--line); }
+/* ═══ SHARED ═══════════════════════════ */
+.sec-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.sec-label {
+  font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px; color: var(--outline);
+}
+.sec-label span { color: #ff5733; }
+.sec-label::before { content: ''; display: inline-block; width: 1px; height: 13px; background: #ff5733; }
+.sec-counter { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 400; color: var(--outline); letter-spacing: .08em; }
+.tech-rule { border: none; height: 1px; background: linear-gradient(90deg, #ff5733, transparent 70%); margin: 40px 0; }
 
-  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 13px; font-weight: 600; padding: 10px 22px;
-    border-radius: 6px; transition: all 0.15s;
-  }
-  .btn-dark { background: var(--ink); color: var(--white); }
-  .btn-dark:hover { opacity: 0.85; }
-  .btn-outline { border: 1px solid var(--line); color: var(--mid); background: var(--white); }
-  .btn-outline:hover { border-color: var(--ink); color: var(--ink); }
+/* ═══ HOME ═════════════════════════════ */
+#page-home {
+  background: #0a0a0a;
+  overflow-y: auto;
+  --h-accent: #ff5733;
+  --h-muted:  #a1a1a1;
+  --h-text:   #ffffff;
+}
 
-  /* ── SECTION CHROME ── */
-  section { border-bottom: 1px solid var(--line); padding: 64px 0; }
-  section:last-of-type { border-bottom: none; }
+.home-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 48px 64px;
+}
 
-  .sec-label {
-    font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--faint);
-    margin-bottom: 36px;
-  }
-  h2 {
-    font-size: 26px; font-weight: 700; letter-spacing: -0.025em;
-    color: var(--ink); margin-bottom: 32px;
-  }
+/* ── Hero ── */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: flex-start;
+  gap: 48px;
+  margin-bottom: 36px;
+}
 
-  /* ── STRENGTHS ── */
-  .strengths-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
-  }
-  .strength-card {
-    background: var(--white); border: 1px solid var(--line);
-    padding: 28px 24px;
-    transition: border-color 0.15s;
-  }
-  .strength-card:hover { border-color: #ccc; }
-  .strength-icon {
-    font-size: 22px; margin-bottom: 14px; display: block;
-  }
-  .strength-title {
-    font-size: 15px; font-weight: 700; letter-spacing: -0.015em;
-    color: var(--ink); margin-bottom: 8px;
-  }
-  .strength-desc {
-    font-size: 13px; color: var(--mid); line-height: 1.65;
-  }
+.hero-h1 {
+  font-family: 'Instrument Serif', serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(52px, 6vw, 92px);
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  color: var(--h-text);
+  margin-bottom: 28px;
+}
+.hero-h1 .h-line2 {
+  color: var(--h-accent);
+  display: block;
+}
 
-  /* ── EXPERIENCE ── */
-  .exp-list { display: flex; flex-direction: column; gap: 0; }
+.hero-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: var(--h-muted);
+  line-height: 1.75;
+  max-width: 480px;
+  font-weight: 400;
+}
+.hero-desc strong { color: var(--h-text); font-weight: 600; }
 
-  .exp-company {
-    border-top: 1px solid var(--line); padding: 32px 0 0;
-  }
-  .exp-company:last-child { border-bottom: 1px solid var(--line); padding-bottom: 32px; }
+.hero-photo-wrap {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-top: 0;
+}
+.hero-photo-ring {
+  position: relative;
+  width: 260px; height: 260px;
+  flex-shrink: 0;
+}
+.hero-photo-ring::before {
+  content: '';
+  position: absolute; inset: -10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,87,51,.12);
+}
+.hero-photo-ring::after {
+  content: '';
+  position: absolute; inset: -3px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,87,51,.25);
+}
+.hero-photo-ring img {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  filter: grayscale(1);
+  border: 6px solid #0a0a0a;
+  box-shadow: 0 0 48px rgba(255,77,0,.18);
+  display: block;
+}
 
-  .exp-company-header {
-    display: flex; align-items: baseline; gap: 16px;
-    flex-wrap: wrap; margin-bottom: 6px;
-  }
-  .exp-co {
-    font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink);
-  }
-  .exp-role {
-    font-size: 13px; font-weight: 500; color: var(--mid);
-  }
-  .exp-company-meta {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 24px; flex-wrap: wrap;
-  }
-  .exp-period {
-    font-family: var(--mono); font-size: 11px; color: var(--faint); letter-spacing: 0.04em;
-  }
-  .exp-badge {
-    font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
-    text-transform: uppercase; padding: 2px 8px;
-    background: #dcfce7; color: var(--green); border-radius: 100px;
-  }
+/* ── Stat bar ── */
+.hero-stat-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  padding: 28px 0;
+  margin-bottom: 40px;
+}
+.h-stat {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-right: 1px solid rgba(255,255,255,.08);
+  padding: 8px 20px;
+}
+.h-stat:last-child { border-right: none; }
+.h-stat-num {
+  font-family: 'Instrument Serif', serif;
+  font-style: normal;
+  font-size: 38px;
+  color: var(--h-accent);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.h-stat-lbl {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px; font-weight: 400;
+  color: var(--h-muted);
+  letter-spacing: .22em; text-transform: uppercase;
+}
 
-  .exp-projects { display: flex; flex-direction: column; gap: 2px; margin-bottom: 32px; }
-  .exp-project {
-    background: var(--white); border: 1px solid var(--line);
-    padding: 20px 24px; transition: border-color 0.15s;
-  }
-  .exp-project:hover { border-color: #bbb; }
+/* ── Skills section ── */
+.skills-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+.skills-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .28em; text-transform: uppercase;
+  color: var(--h-accent);
+}
+.skills-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px; color: var(--h-muted);
+  letter-spacing: .12em; text-transform: uppercase;
+}
 
-  .exp-project-header {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 16px; margin-bottom: 4px; flex-wrap: wrap;
-  }
-  .exp-proj-name {
-    font-size: 14px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink);
-  }
-  .exp-proj-platforms { display: flex; gap: 6px; }
-  .exp-proj-plat {
-    font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em;
-    padding: 2px 8px; border-radius: 100px;
-    background: var(--tag-bg); color: var(--mid); border: 1px solid var(--line);
-  }
-  .exp-proj-stack {
-    font-family: var(--mono); font-size: 11px; color: var(--faint);
-    letter-spacing: 0.04em; margin-bottom: 12px;
-  }
-  .exp-points { list-style: none; display: flex; flex-direction: column; gap: 7px; max-width: 560px; }
-  .exp-points li {
-    font-size: 13.5px; color: var(--mid); line-height: 1.6;
-    padding-left: 18px; position: relative;
-  }
-  .exp-points li::before { content: '—'; color: var(--faint); position: absolute; left: 0; top: 0; }
-  .exp-points li strong { color: var(--ink); font-weight: 600; }
-  .exp-proj-links { display: flex; gap: 14px; margin-top: 12px; }
-  .exp-proj-link {
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em;
-    color: var(--faint); border-bottom: 1px solid var(--line);
-    padding-bottom: 1px; transition: color 0.15s, border-color 0.15s;
-    text-decoration: none;
-  }
-  .exp-proj-link:hover { color: var(--ink); border-color: var(--ink); }
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.skill-card {
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 14px;
+  padding: 32px 28px 36px;
+  display: flex; flex-direction: column;
+  transition: border-color .3s, background .3s;
+  background: transparent;
+}
+.skill-card:hover {
+  border-color: rgba(255,87,51,.3);
+  background: rgba(255,255,255,.02);
+}
+.skill-card-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 28px;
+}
+.skill-icon { font-size: 26px; line-height: 1; }
+.skill-num {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; color: var(--h-muted);
+  font-weight: 400;
+}
+.skill-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 700;
+  color: var(--h-text);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: 14px; line-height: 1.3;
+}
+.skill-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; color: var(--h-muted);
+  line-height: 1.65; font-weight: 400;
+}
 
-  /* ── AWARD BADGE ── */
-  .award-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
-    text-transform: uppercase; padding: 4px 12px;
-    background: #fef9e7; color: var(--gold); border: 1px solid #f0e0a0;
-    border-radius: 100px; font-weight: 500;
-  }
+/* ── Home responsive ── */
+@media (max-width: 860px) {
+  .home-inner { padding: 56px 24px 0; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-photo-wrap { justify-content: flex-start; }
+  .hero-photo-ring { width: 240px; height: 240px; }
+  .hero-stat-bar { grid-template-columns: repeat(2,1fr); }
+  .h-stat:nth-child(2) { border-right: none; }
+  .skills-grid { grid-template-columns: repeat(2,1fr); }
+  .home-footer { grid-template-columns: 1fr; }
+  .home-footer-right { align-items: flex-start; }
+}
+@media (max-width: 560px) {
+  .skills-grid { grid-template-columns: 1fr; }
+  .hero-h1 { font-size: 44px; }
+}
 
-  .proj-item.grey-proj {
-    background: #f4f4f0; border-color: #e0e0da;
-  }
-  .proj-list { display: flex; flex-direction: column; gap: 2px; }
-  .proj-item {
-    background: var(--white); border: 1px solid var(--line);
-    padding: 24px 28px;
-    display: grid; grid-template-columns: 1fr auto;
-    gap: 20px; align-items: start;
-    transition: border-color 0.15s;
-  }
-  .proj-item:hover { border-color: #bbb; }
-  .proj-item.hero-proj {
-    background: var(--ink); border-color: var(--ink);
-    color: var(--white);
-  }
+/* ═══ WORK — ACCORDION ════════════════ */
+.work-section { margin-bottom: 40px; }
 
-  .proj-name {
-    font-size: 15px; font-weight: 700; letter-spacing: -0.01em;
-    margin-bottom: 4px;
-  }
-  .proj-item.hero-proj .proj-name { color: var(--white); }
-  .proj-stack {
-    font-family: var(--mono); font-size: 11px; color: var(--faint);
-    letter-spacing: 0.04em; margin-bottom: 10px;
-  }
-  .proj-item.hero-proj .proj-stack { color: rgba(255,255,255,0.45); }
-  .proj-desc { font-size: 13px; color: var(--mid); line-height: 1.65; }
-  .proj-item.hero-proj .proj-desc { color: rgba(255,255,255,0.65); }
+/* Row container */
+.accordion {
+  display: flex;
+  height: 560px;          /* taller */
+  border: 1px solid var(--out-dim);
+  overflow: hidden;
+}
 
-  .proj-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
-  .proj-platforms { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-  .plat {
-    font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
-    padding: 3px 9px; border-radius: 100px;
-    background: var(--tag-bg); color: var(--mid); border: 1px solid var(--line);
-  }
-  .proj-item.hero-proj .plat { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.2); }
-  .proj-links { display: flex; gap: 12px; }
-  .proj-link {
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em;
-    color: var(--faint); border-bottom: 1px solid var(--line);
-    padding-bottom: 1px; transition: color 0.15s, border-color 0.15s;
-  }
-  .proj-link:hover { color: var(--ink); border-color: var(--ink); }
-  .proj-item.hero-proj .proj-link { color: rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.25); }
-  .proj-item.hero-proj .proj-link:hover { color: var(--white); border-color: var(--white); }
+/* Every card lives in the row permanently */
+.acc-card {
+  /* collapsed: 60px wide */
+  flex: 0 0 60px;
+  overflow: hidden;
+  border-right: 1px solid var(--out-dim);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  cursor: pointer;
+  background: var(--surf-mid);
+  /* smooth horizontal expand/collapse */
+  transition: flex-basis .5s cubic-bezier(.4,0,.2,1),
+              flex-grow  .5s cubic-bezier(.4,0,.2,1),
+              background .25s ease;
+}
+.acc-card:last-child { border-right: none; }
+.acc-card:not(.open):hover { background: #1a1a1a; }
 
-  /* ── HERO PROJECT STATS ── */
-  .proj-hero-stats {
-    display: flex; gap: 16px; margin-top: 14px; margin-bottom: 8px; flex-wrap: wrap;
-  }
-  .proj-hero-stat {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
-    padding: 4px 12px; border-radius: 100px;
-    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.75);
-    border: 1px solid rgba(255,255,255,0.15);
-  }
-  .proj-hero-stat.gold {
-    background: rgba(184,134,11,0.15); color: #f0d060;
-    border-color: rgba(240,208,96,0.3);
-  }
+/* open card takes all remaining space */
+.acc-card.open {
+  flex: 1 1 auto;
+  cursor: default;
+  background: #111111;
+}
 
-  /* ── PERSONAL PROJECTS ── */
-  .personal-proj-list { display: flex; flex-direction: column; gap: 2px; }
-  .personal-proj-item {
-    background: var(--white); border: 1px solid var(--line);
-    padding: 20px 24px;
-    display: flex; justify-content: space-between; align-items: start;
-    gap: 20px; transition: border-color 0.15s;
-  }
-  .personal-proj-item:hover { border-color: #bbb; }
-  .personal-proj-left { flex: 1; }
-  .personal-proj-name {
-    font-size: 14px; font-weight: 700; letter-spacing: -0.01em;
-    color: var(--ink); margin-bottom: 3px;
-  }
-  .personal-proj-stack {
-    font-family: var(--mono); font-size: 11px; color: var(--faint);
-    letter-spacing: 0.04em; margin-bottom: 8px;
-  }
-  .personal-proj-desc {
-    font-size: 13px; color: var(--mid); line-height: 1.65;
-    max-width: 540px;
-  }
-  .personal-proj-right {
-    display: flex; flex-direction: column; align-items: flex-end;
-    gap: 8px; flex-shrink: 0;
-  }
-  .personal-proj-tag {
-    font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em;
-    text-transform: uppercase; padding: 2px 8px; border-radius: 100px;
-    background: var(--tag-bg); color: var(--mid); border: 1px solid var(--line);
-  }
-  .personal-proj-link {
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em;
-    color: var(--faint); border-bottom: 1px solid var(--line);
-    padding-bottom: 1px; transition: color 0.15s, border-color 0.15s;
-  }
-  .personal-proj-link:hover { color: var(--ink); border-color: var(--ink); }
+/* corner brackets on open card only */
+.acc-card.open::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 14px; height: 14px;
+  border-top: 2px solid #ff5733; border-left: 2px solid #ff5733;
+  z-index: 3; pointer-events: none;
+}
+.acc-card.open::after {
+  content: ''; position: absolute; bottom: 0; right: 0;
+  width: 14px; height: 14px;
+  border-bottom: 2px solid #ff5733; border-right: 2px solid #ff5733;
+  z-index: 3; pointer-events: none;
+}
 
-  /* ── SKILLS ── */
-  .skill-group-label {
-    font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--faint); margin-bottom: 10px;
-  }
-  .skills-bars { display: flex; flex-direction: column; gap: 0; }
-  .skill-bar-row {
-    display: grid; grid-template-columns: 160px 1fr 52px;
-    align-items: center; gap: 16px;
-    padding: 10px 0; border-bottom: 1px solid var(--line);
-  }
-  .skill-bar-row:last-child { border-bottom: none; }
-  .skill-bar-name { font-size: 13px; color: var(--ink); }
-  .skill-bar-track {
-    height: 3px; background: var(--line);
-    border-radius: 99px; overflow: hidden;
-  }
-  .skill-bar-fill {
-    height: 100%; border-radius: 99px;
-    background: var(--ink);
-    width: 0;
-  }
-  .skill-bar-fill.go { width: var(--w); }
-  .skill-bar-level {
-    font-family: var(--mono); font-size: 10px;
-    color: var(--faint); letter-spacing: 0.06em; text-align: right;
-  }
-  .skills-cols-wrap {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 0 60px;
-  }
-  .skills-col-group { padding: 0 0 28px; }
-  .skills-col-group:last-child { padding-bottom: 0; }
+/* ── Collapsed tab label ── */
+.acc-tab-inner {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: 16px 0; transition: opacity .2s ease;
+  min-width: 60px; pointer-events: none;
+}
+.acc-card.open .acc-tab-inner { opacity: 0; transition: opacity .12s ease; }
 
-  /* ── EDUCATION ── */
-  .edu-list { display: flex; flex-direction: column; gap: 2px; }
-  .edu-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 18px 24px; background: var(--white); border: 1px solid var(--line);
-    transition: border-color 0.15s;
-  }
-  .edu-item:hover { border-color: #bbb; }
-  .edu-deg { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
-  .edu-school { font-size: 13px; color: var(--mid); }
-  .edu-year { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+.acc-tab-company {
+  font-family: 'Inter', sans-serif; font-size: 9px; color: #444;
+  letter-spacing: .1em; text-transform: uppercase;
+  writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap;
+}
+.acc-tab-title {
+  font-family: 'Instrument Serif', serif; font-size: 17px; font-weight: 400; color: rgba(255,255,255,.4);
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  letter-spacing: .01em; white-space: nowrap; transition: color .2s;
+}
+.acc-card:not(.open):hover .acc-tab-title { color: #fff; }
+.acc-tab-year {
+  font-family: 'Inter', sans-serif; font-size: 9px; color: #444;
+  letter-spacing: .08em;
+  writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap;
+}
 
-  /* ── CONTACT ── */
-  #contact { background: var(--ink); }
-  #contact .container { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
-  .contact-left {}
-  .contact-heading { font-size: 28px; font-weight: 700; letter-spacing: -0.025em; color: var(--white); margin-bottom: 8px; }
-  .contact-sub { font-size: 14px; color: rgba(255,255,255,0.45); }
-  .contact-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-  .btn-white { background: var(--white); color: var(--ink); }
-  .btn-white:hover { opacity: 0.9; }
-  .btn-ghost-white { border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.7); }
-  .btn-ghost-white:hover { border-color: var(--white); color: var(--white); }
+/* ── Expanded content ── */
+.acc-expanded {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transition: opacity .15s ease; min-width: 0; overflow: hidden;
+}
+.acc-card.open .acc-expanded { opacity: 1; pointer-events: auto; transition: opacity .3s ease .22s; }
 
-  /* ── FOOTER ── */
-  footer {
-    padding: 24px 48px; display: flex;
-    justify-content: space-between; align-items: center;
-    border-top: 1px solid var(--line);
-    font-family: var(--mono); font-size: 11px; color: var(--faint);
-  }
+/* cover */
+.acc-cover {
+  width: 100%; height: 200px; background: #0d0d0d;
+  display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid #222; flex-shrink: 0; position: relative; overflow: hidden;
+}
+.acc-cover-label { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 400; color: #333; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+.acc-cover-meta { position: absolute; top: 10px; left: 12px; font-family: 'Inter', sans-serif; font-size: 10px; color: #555; letter-spacing: .08em; text-transform: uppercase; }
+.acc-cover-tag { position: absolute; top: 10px; right: 12px; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; color: #aaa; border-left: 2px solid #ff5733; padding-left: 8px; letter-spacing: .06em; text-transform: uppercase; }
 
-  /* ── FADE IN ── */
-  .fade { opacity: 1; transform: none; }
+/* body */
+.acc-body { padding: 20px 24px 16px; overflow-y: auto; flex: 1; }
+.acc-body::-webkit-scrollbar { width: 2px; }
+.acc-body::-webkit-scrollbar-thumb { background: #333; }
+.acc-title { font-family: 'Instrument Serif', serif; font-size: 26px; font-weight: 400; color: #fff; line-height: 1.15; margin-bottom: 4px; }
+.acc-subtitle { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; color: #555; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; }
+.acc-desc { font-size: 13px; color: #a1a1a1; line-height: 1.7; font-weight: 400; margin-bottom: 12px; }
+.acc-bullets { list-style: none; padding: 0; margin-bottom: 12px; }
+.acc-bullets li { font-size: 12px; color: #a1a1a1; padding: 3px 0 3px 16px; position: relative; line-height: 1.6; font-weight: 400; }
+.acc-bullets li::before { content: '—'; position: absolute; left: 0; color: #ff5733; font-size: 10px; top: 5px; }
+.acc-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.acc-tag { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 500; color: #888; background: #1a1a1a; border: 1px solid #2a2a2a; padding: 3px 10px; border-radius: 4px; letter-spacing: .04em; }
+.acc-links { display: flex; gap: 16px; }
+.acc-link { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: #555; text-decoration: none; border-bottom: 1px solid #2a2a2a; padding-bottom: 1px; letter-spacing: .06em; text-transform: uppercase; transition: color .2s, border-color .2s; }
+.acc-link:hover { color: #ff5733; border-color: #ff5733; }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 720px) {
-    nav, footer { padding: 0 20px; }
-    .container { padding: 0 20px; }
-    .nav-links { display: none; }
-    h1 { font-size: 34px; }
-    .strengths-grid { grid-template-columns: 1fr; }
-    .exp-item { grid-template-columns: 1fr; gap: 12px; }
-    .proj-item { grid-template-columns: 1fr; }
-    .proj-right { align-items: flex-start; }
-    .skills-cols-wrap { grid-template-columns: 1fr; gap: 0; }
-    .skills-cols-wrap > div + div { padding-top: 24px; border-top: 1px solid var(--line); margin-top: 8px; }
-    .skill-bar-row { grid-template-columns: 140px 1fr 48px; }
-    #contact .container { flex-direction: column; align-items: flex-start; }
-    .stat-row { gap: 8px; }
-    .edu-item { flex-direction: column; align-items: flex-start; gap: 4px; }
-    .personal-proj-item { flex-direction: column; }
-    .personal-proj-right { align-items: flex-start; }
-    .proj-hero-stats { gap: 8px; }
-  }
+/* progress */
+.progress-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.progress-dots { display: flex; align-items: center; gap: 4px; }
+.p-dot { width: 20px; height: 3px; background: #222; transition: background .3s; border-radius: 2px; }
+.p-dot.active { background: #ff5733; }
+.progress-end { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; color: #333; letter-spacing: .12em; text-transform: uppercase; }
+
+/* ═══ ABOUT ════════════════════════════ */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 60px; align-items: start; }
+.term-prompt { font-family: 'Inter', sans-serif; font-size: 12px; color: #555; letter-spacing: .04em; margin-bottom: 18px; display: flex; align-items: center; gap: 6px; }
+.term-prompt::before { content: '$'; color: #ff5733; font-weight: 700; }
+.about-lead { font-family: 'Instrument Serif', serif; font-size: 22px; font-weight: 400; color: #fff; line-height: 1.55; margin-bottom: 20px; }
+.about-body { font-size: 14px; color: #a1a1a1; line-height: 1.8; font-weight: 400; margin-bottom: 12px; }
+.about-body strong { color: #fff; font-weight: 600; }
+.stack-lbl { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700; color: #555; letter-spacing: .18em; text-transform: uppercase; display: flex; align-items: center; gap: 7px; margin: 22px 0 10px; }
+.stack-lbl::before { content: ''; width: 1px; height: 11px; background: #ff5733; display: inline-block; }
+.stack-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.s-tag { font-family: 'Inter', sans-serif; font-size: 11px; color: #888; background: #161616; border: 1px solid #2a2a2a; padding: 4px 10px; border-radius: 4px; letter-spacing: .04em; transition: color .2s, border-color .2s; }
+.s-tag:hover { color: #fff; border-color: #ff5733; }
+.skill-section { margin-top: 28px; }
+.skill-sec-lbl { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700; color: #444; letter-spacing: .14em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.skill-sec-lbl::before, .skill-sec-lbl::after { content: '--'; color: #333; }
+.skill-row-a { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #1e1e1e; }
+.skill-row-a:last-child { border-bottom: none; }
+.sk-name { font-family: 'Inter', sans-serif; font-size: 13px; color: #fff; font-weight: 400; }
+.sk-lvl { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; }
+.expert { color: #ff5733; } .adv { color: #a1a1a1; } .pro { color: #555; }
+.edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+.edu-degree { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+.edu-school { font-family: 'Inter', sans-serif; font-size: 11px; color: #555; }
+
+/* ═══ WORK TIMELINE ════════════════════ */
+.wk-sec-label {
+  font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px; color: #555;
+  margin-bottom: 28px;
+}
+.wk-sec-label span { color: #ff5733; }
+.wk-sec-label::before { content: ''; display: inline-block; width: 1px; height: 13px; background: #ff5733; }
+
+.wk-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 0 56px;
+  align-items: start;
+}
+
+.wk-lead {
+  font-family: 'Instrument Serif', serif;
+  font-size: 20px; font-weight: 400; color: #fff;
+  line-height: 1.6; margin-bottom: 28px;
+}
+
+.wk-term {
+  font-family: 'Instrument Serif', serif;
+  font-size: 15px; color: #555;
+  margin-bottom: 20px;
+}
+
+.wk-company-row {
+  display: flex; align-items: baseline; gap: 10px;
+  margin-bottom: 6px; flex-wrap: wrap;
+}
+.wk-company {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px; font-weight: 700; color: #fff;
+}
+.wk-dash { color: #ff5733; font-size: 14px; }
+.wk-role {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px; font-weight: 400; color: #a1a1a1;
+}
+.wk-meta-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px;
+}
+.wk-period {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; color: #555;
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.wk-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: #ff5733; border: 1px solid rgba(255,87,51,.35);
+  padding: 2px 8px; border-radius: 2px;
+}
+
+.wk-card-img {
+  width: 100%; height: 180px;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px 4px 0 0;
+  margin: -18px -20px 14px -20px;
+  width: calc(100% + 40px);
+}
+  border: 1px solid #1e1e1e;
+  border-radius: 6px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  background: #0d0d0d;
+}
+.wk-card-header {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 12px; margin-bottom: 4px;
+}
+.wk-proj-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 700; color: #fff;
+}
+.wk-proj-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; font-weight: 500; letter-spacing: .06em;
+  color: #888; background: #1a1a1a; border: 1px solid #2a2a2a;
+  padding: 3px 9px; border-radius: 3px; white-space: nowrap; flex-shrink: 0;
+}
+.wk-stack {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; color: #555; margin-bottom: 10px; letter-spacing: .02em;
+}
+.wk-bullets { list-style: none; padding: 0; margin-bottom: 10px; }
+.wk-bullets li {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; color: #a1a1a1;
+  padding: 3px 0 3px 18px; position: relative;
+  line-height: 1.6; font-weight: 400;
+}
+.wk-bullets li::before {
+  content: '—'; position: absolute; left: 0;
+  color: #555; font-size: 11px; top: 5px;
+}
+.wk-bullets li strong { color: #fff; font-weight: 600; }
+.wk-links { display: flex; gap: 14px; }
+.wk-link {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 500; color: #555;
+  text-decoration: none; letter-spacing: .04em;
+  transition: color .2s;
+}
+.wk-link:hover { color: #ff5733; }
+
+/* sidebar */
+.wk-sidebar { position: sticky; top: 20px; }
+.wk-sidebar-section {}
+.wk-sidebar-heading {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: #fff; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+.wk-sidebar-heading::before { content: ''; width: 2px; height: 14px; background: #ff5733; display: inline-block; }
+.wk-skill-cat {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; color: #444;
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.wk-skill-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 5px 0; border-bottom: 1px solid #161616;
+}
+.wk-skill-row:last-of-type { border-bottom: none; }
+.wk-sk-name { font-family: 'Inter', sans-serif; font-size: 13px; color: #fff; font-weight: 400; }
+.wk-edu-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+.wk-edu-degree { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+.wk-edu-school { font-family: 'Inter', sans-serif; font-size: 11px; color: #555; }
+
+/* ═══ RESPONSIVE ════════════════════════ */
+@media (max-width: 860px) {
+  .inner { padding: 32px 20px 52px; }
+  .home-inner { padding: 40px 20px 52px; }
+  #topbar { padding: 0 20px; }
+  .brand-role { display: none; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-photo-wrap { justify-content: flex-start; }
+  .hero-photo-ring { width: 200px; height: 200px; }
+  .hero-stat-bar { grid-template-columns: repeat(2,1fr); }
+  .h-stat:nth-child(2) { border-right: none; }
+  .skills-grid { grid-template-columns: repeat(2,1fr); }
+  .wk-grid { grid-template-columns: 1fr; }
+  .wk-sidebar { position: static; margin-top: 40px; }
+  .footer-inner { padding: 0 24px; gap: 16px; }
+  .footer-links { gap: 16px; }
+}
+@media (max-width: 560px) {
+  .skills-grid { grid-template-columns: 1fr; }
+  .hero-h1 { font-size: 40px; }
+  .h-stat-num { font-size: 30px; }
+  .home-footer { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr; height: auto; padding: 16px 20px; }
+  .footer-links { justify-content: flex-start; flex-wrap: wrap; }
+  .footer-right { justify-content: flex-start; }
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <img src="photo.jpg" alt="Kishore B" style="width:32px;height:32px;border-radius:6px;object-fit:cover;object-position:center top;border:1px solid var(--line);">
-    <span class="nav-name">Kishore B</span>
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="brand" onclick="showPage('home')">
+    <div class="brand-dot"><div class="brand-dot-inner"></div></div>
+    <span class="brand-name">Kishore B</span>
+    <span class="brand-sep">//</span>
+    <span class="brand-role">Senior Gameplay Engineer</span>
   </div>
-  <div class="nav-links">
-    <a href="#strengths">Strengths</a>
-    <a href="#experience">Experience</a>
-    <a href="#projects">Projects</a>
-    <a href="#personal">Personal</a>
-    <a href="#skills">Skills</a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><button class="nav-btn active" data-page="home">Home</button></li>
+      <li><button class="nav-btn" data-page="work">Projects</button></li>
+      <li><button class="nav-btn" data-page="about">Work</button></li>
+    </ul>
+    <div class="avail-badge"><div class="pulse"></div>Available</div>
   </div>
-  <a href="#" onclick="window.location='mai'+'lto:'+'kishore.b.1996'+'@'+'gmail.com';return false;" class="btn nav-cta">Contact Me</a>
-</nav>
+</div>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="container">
-    <div class="hero-eyebrow">Available for senior roles</div>
-    <h1>Senior Gameplay<br><span class="dim">&amp; Systems Engineer</span></h1>
-    <p class="hero-bio">
-      <strong>5+ years</strong> shipping multiplayer games across Unity, Unreal Engine, iOS, Android, Steam &amp; Meta Horizon. Expert in <strong>gameplay architecture</strong>, <strong>deterministic networking</strong>, and <strong>live service systems</strong>.
-    </p>
+<!-- VIEWPORT -->
+<div id="viewport">
 
-    <div class="stat-row">
-      <div class="stat-pill"><span>5+</span> Years Experience</div>
-      <div class="stat-pill"><span>5</span> Shipped Titles</div>
-      <div class="stat-pill"><span>4</span> Platforms Released</div>
-      <div class="stat-pill"><span>2</span> Engines Mastered</div>
+<!-- HOME -->
+<div class="page active" id="page-home">
+<div class="home-inner">
+
+  <!-- Hero -->
+  <div class="hero-grid">
+    <div>
+      <h1 class="hero-h1">
+        Senior Gameplay<br>
+        <span class="h-line2">&amp; Systems Engineer</span>
+      </h1>
+      <p class="hero-desc">
+        <strong>5+ years</strong> shipping multiplayer games across Unity, Unreal Engine, iOS, Android, Steam &amp; Meta Horizon. Expert in <strong>gameplay architecture</strong>, <strong>deterministic networking</strong>, and <strong>live service systems</strong>.
+      </p>
     </div>
-
-    <div class="hero-actions">
-      <a href="#experience" class="btn btn-dark">View Experience →</a>
-      <a href="https://www.linkedin.com/in/kishore-boopathi-1242bb87/" target="_blank" class="btn btn-outline">LinkedIn ↗</a>
-      <a href="https://github.com/KishoreBoopathi" target="_blank" class="btn btn-outline">GitHub ↗</a>
-    </div>
-  </div>
-</section>
-
-<!-- STRENGTHS -->
-<section id="strengths">
-  <div class="container">
-    <div class="sec-label">What I bring</div>
-    <div class="strengths-grid">
-      <div class="strength-card fade">
-        <span class="strength-icon">🎮</span>
-        <div class="strength-title">Gameplay Systems</div>
-        <div class="strength-desc">Deep expertise building card systems, combat, AI, boss logic, quest systems, and player controllers from scratch in both Unity and Unreal.</div>
-      </div>
-      <div class="strength-card fade">
-        <span class="strength-icon">🌐</span>
-        <div class="strength-title">Multiplayer & Networking</div>
-        <div class="strength-desc">Deterministic multiplayer via Photon Quantum, Nakama backend integration, matchmaking, and live service infrastructure for shipped commercial titles.</div>
-      </div>
-      <div class="strength-card fade">
-        <span class="strength-icon">🏗️</span>
-        <div class="strength-title">Full-Stack Game Dev</div>
-        <div class="strength-desc">Comfortable owning both the Unity client and Golang server. Built IAP, live events, monetization pipelines, and backend-integrated store systems.</div>
-      </div>
-      <div class="strength-card fade">
-        <span class="strength-icon">📦</span>
-        <div class="strength-title">Performance & DevOps</div>
-        <div class="strength-desc">Cut build sizes by 55% using Unity Addressables. Served as Release Master — owned CI/CD pipeline and iOS deployment while concurrently developing major features across release cycles ranging from weekly to bi-monthly.</div>
-      </div>
-      <div class="strength-card fade">
-        <span class="strength-icon">🚀</span>
-        <div class="strength-title">Shipped on 4 Platforms</div>
-        <div class="strength-desc">Published titles on iOS App Store, Google Play, Steam and Meta Horizon Worlds. Hands-on with platform certification, build pipelines, and store submission processes.</div>
-      </div>
-      <div class="strength-card fade">
-        <span class="strength-icon">👥</span>
-        <div class="strength-title">Leadership & Ownership</div>
-        <div class="strength-desc">Mentored junior engineers, wrote full GDDs, and planned production roadmaps. Progressed from developer to Senior Engineer within a single studio.</div>
+    <div class="hero-photo-wrap">
+      <div class="hero-photo-ring">
+        <img src="https://kishoreboopathi.github.io/photo.jpg" alt="Kishore Boopathi">
       </div>
     </div>
   </div>
-</section>
 
-<!-- EXPERIENCE -->
-<section id="experience">
-  <div class="container">
-    <div class="sec-label">Work history</div>
-    <div class="exp-list">
-
-      <!-- FLECKS LABS -->
-      <div class="exp-company fade">
-        <div class="exp-company-header">
-          <span class="exp-co">Flecks Labs</span>
-          <span class="exp-role">Senior Software Engineer</span>
-        </div>
-        <div class="exp-company-meta">
-          <span class="exp-period">Jul 2025 – Dec 2025</span>
-          <span class="exp-badge">Recent</span>
-        </div>
-        <div class="exp-projects">
-
-          <div class="exp-project">
-            <div class="exp-project-header">
-              <span class="exp-proj-name">Scoop Up!</span>
-              <div class="exp-proj-platforms">
-                <span class="exp-proj-plat">Meta Horizon Worlds</span>
-              </div>
-            </div>
-            <div class="exp-proj-stack">TypeScript · Meta Horizon Worlds · Multiplayer</div>
-            <ul class="exp-points">
-              <li>Developed a <strong>fast-paced multiplayer co-op game</strong> for Meta Horizon Worlds where players chase Flavour Monsters and fulfil customer orders as a team.</li>
-              <li>Built core <strong>gameplay systems in TypeScript</strong> under strict Meta platform and performance constraints.</li>
-              <li>Designed and implemented <strong>multiplayer synchronization</strong>, order management, and rush-hour game flow systems.</li>
-            </ul>
-            <div class="exp-proj-links">
-              <a href="https://horizon.meta.com/world/881392728384664/" target="_blank" class="exp-proj-link">Meta Horizon ↗</a>
-            </div>
-          </div>
-
-          <div class="exp-project">
-            <div class="exp-project-header">
-              <span class="exp-proj-name">Tiger Goat</span>
-              <div class="exp-proj-platforms">
-                <span class="exp-proj-plat">Android</span>
-              </div>
-            </div>
-            <div class="exp-proj-stack">Unity · Photon Quantum · Deterministic Multiplayer</div>
-            <ul class="exp-points">
-              <li><strong>Sole developer</strong> — built all gameplay systems, UI, animations, sounds and everything else from scratch.</li>
-              <li>Digital adaptation of the traditional South Indian board game <strong>Aadu Puli Aatam</strong>, reimagined as a competitive 1v1 online game.</li>
-              <li>Implemented <strong>deterministic multiplayer</strong> using Photon Quantum ensuring frame-perfect simulation, bot matchmaking and real-player matchmaking with Firebase analytics.</li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- STUDIO SIRAH -->
-      <div class="exp-company fade">
-        <div class="exp-company-header">
-          <span class="exp-co">Studio Sirah</span>
-          <span class="exp-role">Unity Developer → Senior Gameplay Engineer</span>
-        </div>
-        <div class="exp-company-meta">
-          <span class="exp-period">Nov 2021 – Jun 2025</span>
-        </div>
-        <div class="exp-projects">
-
-          <!-- CHANGE 1: Kurukshetra experience — added server-side work bullet -->
-          <div class="exp-project">
-            <div class="exp-project-header">
-              <span class="exp-proj-name">Kurukshetra: Ascension</span>
-              <div class="exp-proj-platforms">
-                <span class="exp-proj-plat">iOS</span>
-                <span class="exp-proj-plat">Android</span>
-                <span class="exp-proj-plat">Steam</span>
-              </div>
-            </div>
-            <div class="exp-proj-stack">Unity · Nakama · Golang · Multiplayer Card Battler</div>
-            <ul class="exp-points">
-              <li>Progressed to <strong>Senior Engineer</strong> — owned the full programming stack and mentored 2 junior developers.</li>
-              <li>Refactored and extended core systems: <strong>card architecture, deck builder, match flow and progression</strong>.</li>
-              <li>Built <strong>store, monetization pipeline, live events, IAP and inbox</strong> systems end-to-end.</li>
-              <li>Built core <strong>Golang server systems</strong> — inventory economy, campaign mode, draft mode, quest/rewards, push notifications, and IAP validation across Google Play, Apple, and Steam.</li>
-              <li>Reduced mobile build size from <strong>1 GB → 450 MB</strong> using Unity Addressables and downloadable bundles.</li>
-              <li>Served as <strong>Release Master</strong> — owned CI/CD pipeline and iOS deployment while concurrently developing major features across release cycles ranging from weekly to bi-monthly.</li>
-              <li>Stabilized <strong>multiplayer on low-end Android</strong>; maintained matchmaking and backend integrations.</li>
-            </ul>
-            <div class="exp-proj-links">
-              <a href="https://play.google.com/store/apps/details?id=com.StudioSirah.KurukshetraAscension" target="_blank" class="exp-proj-link">Play Store ↗</a>
-              <a href="https://apps.apple.com/in/app/kurukshetra-ascension/id1601430224" target="_blank" class="exp-proj-link">App Store ↗</a>
-              <a href="https://store.steampowered.com/app/1857540/Kurukshetra_Ascension/" target="_blank" class="exp-proj-link">Steam ↗</a>
-            </div>
-          </div>
-
-          <!-- CHANGE 2: Kalpa experience — added technical specifics -->
-          <div class="exp-project">
-            <div class="exp-project-header">
-              <span class="exp-proj-name">Kalpa: Mythic Hero Defense</span>
-              <div class="exp-proj-platforms">
-                <span class="exp-proj-plat">Android</span>
-              </div>
-            </div>
-            <div class="exp-proj-stack">Unity · Tower Defense · Indian Mythology</div>
-            <ul class="exp-points">
-              <li>Joined as <strong>Senior Developer</strong> — owned and built the majority of game systems from scratch.</li>
-              <li>Architected a <strong>Dijkstra-based flow-field pathfinding system</strong> from scratch — pre-baked at level load for O(1) per-unit cost per frame, enabling hundreds of concurrent AI agents on mobile hardware.</li>
-              <li>Built the <strong>AI movement system</strong> with three layers: spline-based path following, boids flocking for natural crowd behavior, and flow-field obstacle avoidance with separate steering for ground and flying units.</li>
-              <li>Developed the <strong>wave spawning system</strong> with AnimationCurve-based timing distribution, dynamic fan-spread positioning, and designer-tunable spawn pacing.</li>
-              <li>Built a suite of <strong>designer and artist tools</strong> to streamline enemy wave design, level layout, and asset integration workflows.</li>
-            </ul>
-            <div class="exp-proj-links">
-              <a href="https://play.google.com/store/apps/details?id=com.StudioSirah.Qila" target="_blank" class="exp-proj-link">Play Store ↗</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ZYGOBOTS -->
-      <div class="exp-company fade">
-        <div class="exp-company-header">
-          <span class="exp-co">Zygobots</span>
-          <span class="exp-role">Game Developer Intern</span>
-        </div>
-        <div class="exp-company-meta">
-          <span class="exp-period">2020 – 2021</span>
-        </div>
-        <div class="exp-projects">
-          <div class="exp-project">
-            <div class="exp-project-header">
-              <span class="exp-proj-name">Psych</span>
-              <div class="exp-proj-platforms">
-                <span class="exp-proj-plat">Steam</span>
-              </div>
-            </div>
-            <div class="exp-proj-stack">Unity · Third-Person Action · Free to Play</div>
-            <ul class="exp-points">
-              <li>Contributed to a <strong>single-player third-person shooter</strong> where a telekinetic alien escapes a research facility overrun by killer space slugs.</li>
-              <li>Built gameplay mechanics including <strong>physics-based weapon attraction</strong> — allowing players to pull objects and weapons telekinetically.</li>
-              <li>Programmed <strong>boss AI movements, attack strategies and animation state machines</strong> for combat encounters.</li>
-              <li>Conducted <strong>QA testing and gameplay balancing</strong> across multiple build cycles.</li>
-            </ul>
-            <div class="exp-proj-links">
-              <a href="https://store.steampowered.com/app/1409370/Psych/" target="_blank" class="exp-proj-link">Steam ↗</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ZOHO -->
-      <div class="exp-company fade">
-        <div class="exp-company-header">
-          <span class="exp-co">Zoho Corporation</span>
-          <span class="exp-role">Software Engineer</span>
-        </div>
-        <div class="exp-company-meta">
-          <span class="exp-period">2016 – 2018</span>
-        </div>
-        <div class="exp-projects">
-          <div class="exp-project">
-            <div class="exp-project-header">
-              <span class="exp-proj-name">ManageEngine Password Manager Pro</span>
-              <div class="exp-proj-platforms">
-                <span class="exp-proj-plat">Enterprise SaaS</span>
-              </div>
-            </div>
-            <div class="exp-proj-stack">Frontend · Backend · Java · Enterprise Password Management</div>
-            <ul class="exp-points">
-              <li>Developed and optimized features for an <strong>enterprise-grade password vault</strong> used by Fortune 500 companies worldwide to manage privileged credentials and digital identities.</li>
-              <li>Worked on scalable <strong>frontend and backend systems</strong> supporting compliance standards including PCI DSS, ISO 27001 and GDPR.</li>
-              <li>Delivered <strong>performance improvements</strong> and production feature enhancements across live enterprise environments.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
+  <!-- Stat bar -->
+  <div class="hero-stat-bar">
+    <div class="h-stat">
+      <div class="h-stat-num" data-target="5" data-suffix="+">5+</div>
+      <div class="h-stat-lbl">Years Exp.</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-num" data-target="5" data-suffix="">5</div>
+      <div class="h-stat-lbl">Shipped Titles</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-num" data-target="4" data-suffix="">4</div>
+      <div class="h-stat-lbl">Platforms</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-num" data-target="2" data-suffix="">2</div>
+      <div class="h-stat-lbl">Engines Mastered</div>
     </div>
   </div>
-</section>
 
-<!-- SHIPPED PROJECTS -->
-<section id="projects">
-  <div class="container">
-    <div class="sec-label">Shipped projects</div>
-    <div class="proj-list">
+  <!-- Skills -->
+  <div class="skills-header">
+    <div class="skills-tag">0.01 // What I Bring</div>
+    <div class="skills-hint">// What you're hiring when you hire me ↘</div>
+  </div>
 
-      <!-- CHANGE 5: Kurukshetra projects — prominent award badge and stats -->
-      <div class="proj-item hero-proj fade" style="grid-template-columns:1fr;">
-        <div>
-          <div class="proj-name">Kurukshetra: Ascension</div>
-          <div class="proj-stack">Unity · Nakama · Golang · Live-Service Multiplayer Card Battler</div>
-          <!-- Prominent stats row -->
-          <div class="proj-hero-stats">
-            <span class="proj-hero-stat gold">🏆 Google Play Best Indie Game 2023</span>
-            <span class="proj-hero-stat">1M+ Downloads</span>
-            <span class="proj-hero-stat">3 Platforms</span>
-          </div>
-          <div class="proj-desc">Strategy card battler inspired by Indian mythology, published by Studio Sirah. Full ownership of Unity gameplay and Golang server. Built card architecture, deck builder, matchmaking, live events, IAP, monetization pipeline, and core server systems including inventory economy, campaign, draft mode, and quest/rewards. Served as Release Master — owned CI/CD pipeline and iOS deployment. Reduced build 1 GB → 450 MB via Addressables.</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px;">
-            <div class="proj-links">
-              <a href="https://play.google.com/store/apps/details?id=com.StudioSirah.KurukshetraAscension" target="_blank" class="proj-link">Play Store ↗</a>
-              <a href="https://apps.apple.com/in/app/kurukshetra-ascension/id1601430224" target="_blank" class="proj-link">App Store ↗</a>
-              <a href="https://store.steampowered.com/app/1857540/Kurukshetra_Ascension/" target="_blank" class="proj-link">Steam ↗</a>
-            </div>
-            <div class="proj-platforms">
-              <span class="plat">iOS</span>
-              <span class="plat">Android</span>
-              <span class="plat">Steam</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="proj-item grey-proj fade" style="grid-template-columns:1fr;">
-        <div>
-          <div class="proj-name">Kalpa: Mythic Hero Defense</div>
-          <div class="proj-stack">Unity · Tower Defense · Indian Mythology</div>
-          <div class="proj-desc">Mythic tower defense game where players defend the sacred world tree Kalpa against Asura hordes using legendary heroes from Indian epics. Senior developer — owned and built majority of systems from scratch including a Dijkstra-based flow-field pathfinding system, three-layer AI movement (spline + boids + flow-field avoidance), wave spawning, and designer tooling.</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px;">
-            <div class="proj-links"><a href="https://play.google.com/store/apps/details?id=com.StudioSirah.Qila" target="_blank" class="proj-link">Play Store ↗</a></div>
-            <div class="proj-platforms"><span class="plat">Android</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CHANGE 4: Scoop Up projects — added gameplay description -->
-      <div class="proj-item grey-proj fade" style="grid-template-columns:1fr;">
-        <div>
-          <div class="proj-name">Scoop Up!</div>
-          <div class="proj-stack">TypeScript · Meta Horizon Worlds · Multiplayer Co-op</div>
-          <div class="proj-desc">Fast-paced multiplayer co-op game for Meta Horizon Worlds where players team up to chase Flavour Monsters, scoop them into cones, fulfil customer orders, and survive rush-hour chaos. Built core gameplay systems, multiplayer synchronization, order management, and rush-hour game flow — all in TypeScript under strict Meta platform and performance constraints.</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px;">
-            <div class="proj-links"><a href="https://horizon.meta.com/world/881392728384664/" target="_blank" class="proj-link">Meta Horizon ↗</a></div>
-            <div class="proj-platforms"><span class="plat">Meta Horizon</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CHANGE 3: Tiger Goat — added Play Store link (update URL when available) -->
-      <div class="proj-item grey-proj fade" style="grid-template-columns:1fr;">
-        <div>
-          <div class="proj-name">Tiger Goat</div>
-          <div class="proj-stack">Unity · Photon Quantum · Deterministic Multiplayer</div>
-          <div class="proj-desc">Digital adaptation of the traditional South Indian board game Aadu Puli Aatam. Sole developer — built all gameplay systems, deterministic multiplayer via Photon Quantum (state sync, rollback, input handling), dual AI systems (in-simulation deterministic + offline minimax), reconnection with frame-snapshot recovery, UI, animations, haptics, and analytics from scratch.</div>
-          <div style="display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px;">
-
-            <div class="proj-platforms"><span class="plat">Android</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="proj-item fade" style="grid-template-columns:1fr;">
-        <div>
-          <div class="proj-name">Psych</div>
-          <div class="proj-stack">Unity · Third-Person Action · Free to Play</div>
-          <div class="proj-desc">Single-player third-person shooter where a telekinetic alien escapes a research facility overrun by killer space slugs. Contributed physics-based weapon attraction mechanics, boss AI systems and animation state machines.</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px;">
-            <div class="proj-links"><a href="https://store.steampowered.com/app/1409370/Psych/" target="_blank" class="proj-link">Steam ↗</a></div>
-            <div class="proj-platforms"><span class="plat">Steam</span></div>
-          </div>
-        </div>
-      </div>
-
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-card-top"><span class="skill-icon">🎮</span><span class="skill-num">#01</span></div>
+      <div class="skill-name">Gameplay Systems</div>
+      <p class="skill-desc">Deep expertise building card systems, combat, AI, boss logic, quest systems, and player controllers from scratch in both Unity and Unreal.</p>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-top"><span class="skill-icon">🌐</span><span class="skill-num">#02</span></div>
+      <div class="skill-name">Multiplayer &amp; Networking</div>
+      <p class="skill-desc">Deterministic multiplayer via Photon Quantum, Nakama backend integration, matchmaking, and live service infrastructure for shipped commercial titles.</p>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-top"><span class="skill-icon">🏗️</span><span class="skill-num">#03</span></div>
+      <div class="skill-name">Full-Stack Game Dev</div>
+      <p class="skill-desc">Comfortable owning both the Unity client and Golang server. Built IAP, live events, monetization pipelines, and backend-integrated store systems.</p>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-top"><span class="skill-icon">📦</span><span class="skill-num">#04</span></div>
+      <div class="skill-name">Performance &amp; DevOps</div>
+      <p class="skill-desc">Cut build sizes by 55% using Unity Addressables. Served as Release Master — owned CI/CD pipeline and iOS deployment cycles.</p>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-top"><span class="skill-icon">🚀</span><span class="skill-num">#05</span></div>
+      <div class="skill-name">Shipped on 4 Platforms</div>
+      <p class="skill-desc">Published titles on iOS App Store, Google Play, Steam and Meta Horizon Worlds. Hands-on with platform certification and store submission.</p>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-top"><span class="skill-icon">👥</span><span class="skill-num">#06</span></div>
+      <div class="skill-name">Leadership &amp; Ownership</div>
+      <p class="skill-desc">Mentored junior engineers, wrote full GDDs, and planned production roadmaps. Progressed from developer to Senior Engineer within a single studio.</p>
     </div>
   </div>
-</section>
 
-<!-- PERSONAL PROJECTS -->
-<section id="personal">
-  <div class="container">
-    <div class="sec-label">Personal projects</div>
-    <div class="personal-proj-list">
 
-      <!-- CHANGE 6: Vanara — updated description to reflect current state -->
-      <div class="personal-proj-item fade">
-        <div class="personal-proj-left">
-          <div class="personal-proj-name">Vanara — Open World Action RPG</div>
-          <div class="personal-proj-stack">Unreal Engine · C++ · Blueprints</div>
-          <div class="personal-proj-desc">Sole programmer. Built player movement, combat system, advanced AI with behavior trees, three boss encounters, a quest system with objectives, and a full HUD using a mix of C++ and Blueprints. Originally built in UE4; currently planning migration to UE5 with system refactoring and a playable vertical slice as the goal.</div>
-        </div>
-        <div class="personal-proj-right">
-          <span class="personal-proj-tag">UE5 · C++</span>
-          <a href="https://github.com/KishoreBoopathi/unreal-systems-cpp" target="_blank" class="personal-proj-link">GitHub ↗</a>
-        </div>
-      </div>
+</div>
+</div>
 
-      <div class="personal-proj-item fade">
-        <div class="personal-proj-left">
-          <div class="personal-proj-name">Modular Weapon Attachment System</div>
-          <div class="personal-proj-stack">Unity · C# · Interface-Driven Architecture</div>
-          <div class="personal-proj-desc">Runtime weapon customization via a socket-based attachment model. Interface-driven polymorphism keeps the Gun class fully decoupled — adding new attachment types requires zero changes to core weapon logic.</div>
-        </div>
-        <div class="personal-proj-right">
-          <span class="personal-proj-tag">Unity · C#</span>
-          <a href="https://github.com/KishoreBoopathi/ModularWeaponSystem" target="_blank" class="personal-proj-link">GitHub ↗</a>
-        </div>
-      </div>
+<!-- WORK -->
+<div class="page" id="page-work">
+<div class="inner">
 
-      <div class="personal-proj-item fade">
-        <div class="personal-proj-left">
-          <div class="personal-proj-name">Quest System</div>
-          <div class="personal-proj-stack">Unity · C# · Event-Driven Architecture</div>
-          <div class="personal-proj-desc">Lightweight quest framework built on a generic event bus. Gameplay systems fire named events; quests listen and evaluate progress. No direct coupling between quest logic and the systems that trigger it.</div>
-        </div>
-        <div class="personal-proj-right">
-          <span class="personal-proj-tag">Unity · C#</span>
-          <a href="https://github.com/KishoreBoopathi/QuestSystem" target="_blank" class="personal-proj-link">GitHub ↗</a>
-        </div>
-      </div>
-
-      <div class="personal-proj-item fade">
-        <div class="personal-proj-left">
-          <div class="personal-proj-name">SpaceEx — 2D Space Shooter</div>
-          <div class="personal-proj-stack">Unity · C# · Object Pooling · Wave Spawning</div>
-          <div class="personal-proj-desc">Complete arcade shooter with data-driven wave spawning, object pooling, composite enemy AI with homing variants, and a full game loop from splash to credits.</div>
-        </div>
-        <div class="personal-proj-right">
-          <span class="personal-proj-tag">Unity · C#</span>
-          <a href="https://github.com/KishoreBoopathi/SpaceEx" target="_blank" class="personal-proj-link">GitHub ↗</a>
-        </div>
-      </div>
-
-      <div class="personal-proj-item fade">
-        <div class="personal-proj-left">
-          <div class="personal-proj-name">Networked Card Game</div>
-          <div class="personal-proj-stack">Unity · C# · Mirror Networking</div>
-          <div class="personal-proj-desc">Two-player networked card game with server-authoritative deal and play flow. Authority-gated player actions, hidden-information card state, and server-side spawn with client-side UI placement.</div>
-        </div>
-        <div class="personal-proj-right">
-          <span class="personal-proj-tag">Unity · C#</span>
-          <a href="https://github.com/KishoreBoopathi/CardGame" target="_blank" class="personal-proj-link">GitHub ↗</a>
-        </div>
-      </div>
-
+  <!-- § 01 Shipped Work -->
+  <div class="work-section">
+    <div class="sec-row">
+      <div class="sec-label"><span>§ 01</span> · Shipped Work</div>
+      <div class="sec-counter" id="shipped-counter">01 / 05</div>
+    </div>
+    <div class="accordion" id="acc-shipped"></div>
+    <div class="progress-row">
+      <div class="progress-dots" id="shipped-dots"></div>
+      <div class="progress-end">End of Shipments</div>
     </div>
   </div>
-</section>
 
-<!-- SKILLS -->
-<section id="skills">
-  <div class="container">
-    <div class="sec-label">Technical skills</div>
-    <div class="skills-cols-wrap">
-
-      <div>
-        <div class="skills-col-group">
-          <div class="skill-group-label">Engines</div>
-          <div class="skills-bars">
-            <div class="skill-bar-row"><span class="skill-bar-name">Unity</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="93%"></div></div><span class="skill-bar-level">Expert</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Unreal Engine 5</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="85%"></div></div><span class="skill-bar-level">Advanced</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Meta Horizon</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="80%"></div></div><span class="skill-bar-level">Advanced</span></div>
-          </div>
-        </div>
-        <div class="skills-col-group">
-          <div class="skill-group-label">Languages</div>
-          <div class="skills-bars">
-            <div class="skill-bar-row"><span class="skill-bar-name">C#</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="95%"></div></div><span class="skill-bar-level">Expert</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">C++</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="76%"></div></div><span class="skill-bar-level">Advanced</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Golang</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="80%"></div></div><span class="skill-bar-level">Advanced</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">TypeScript</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="68%"></div></div><span class="skill-bar-level">Pro</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Java</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="65%"></div></div><span class="skill-bar-level">Pro</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Python</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="60%"></div></div><span class="skill-bar-level">Pro</span></div>
-          </div>
-        </div>
-        <div class="skills-col-group">
-          <div class="skill-group-label">Multiplayer & Networking</div>
-          <div class="skills-bars">
-            <div class="skill-bar-row"><span class="skill-bar-name">Nakama</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="93%"></div></div><span class="skill-bar-level">Expert</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Photon Quantum</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="85%"></div></div><span class="skill-bar-level">Advanced</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Google Protobuf</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="80%"></div></div><span class="skill-bar-level">Advanced</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="skills-col-group">
-          <div class="skill-group-label">Frameworks & Libraries</div>
-          <div class="skills-bars">
-            <div class="skill-bar-row"><span class="skill-bar-name">Unity Addressables</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="93%"></div></div><span class="skill-bar-level">Expert</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">DOTween</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="90%"></div></div><span class="skill-bar-level">Expert</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Unity Input System</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="85%"></div></div><span class="skill-bar-level">Advanced</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Odin Inspector</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="80%"></div></div><span class="skill-bar-level">Advanced</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">I2 Localization</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="70%"></div></div><span class="skill-bar-level">Pro</span></div>
-          </div>
-        </div>
-        <div class="skills-col-group">
-          <div class="skill-group-label">DevOps & Tools</div>
-          <div class="skills-bars">
-            <div class="skill-bar-row"><span class="skill-bar-name">Git / Perforce</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="90%"></div></div><span class="skill-bar-level">Expert</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Jenkins CI/CD</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="82%"></div></div><span class="skill-bar-level">Advanced</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Unity Profiling</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="80%"></div></div><span class="skill-bar-level">Advanced</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Unity Editor Extensions</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="80%"></div></div><span class="skill-bar-level">Advanced</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">JIRA</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="78%"></div></div><span class="skill-bar-level">Advanced</span></div>
-          </div>
-        </div>
-        <div class="skills-col-group">
-          <div class="skill-group-label">Analytics & Services</div>
-          <div class="skills-bars">
-            <div class="skill-bar-row"><span class="skill-bar-name">AWS</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="80%"></div></div><span class="skill-bar-level">Advanced</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">Firebase</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="70%"></div></div><span class="skill-bar-level">Pro</span></div>
-            <div class="skill-bar-row"><span class="skill-bar-name">GameAnalytics</span><div class="skill-bar-track"><div class="skill-bar-fill" data-w="70%"></div></div><span class="skill-bar-level">Pro</span></div>
-          </div>
-        </div>
-      </div>
-
+  <!-- § 02 Personal Projects -->
+  <div class="work-section" style="margin-top:48px;">
+    <div class="sec-row">
+      <div class="sec-label"><span>§ 02</span> · Personal Projects</div>
+      <div class="sec-counter" id="personal-counter">01 / 05</div>
+    </div>
+    <div class="accordion" id="acc-personal"></div>
+    <div class="progress-row">
+      <div class="progress-dots" id="personal-dots"></div>
+      <div class="progress-end">End of Projects</div>
     </div>
   </div>
-</section>
 
-<!-- EDUCATION -->
-<section id="education">
-  <div class="container">
-    <div class="sec-label">Education</div>
-    <div class="edu-list">
-      <div class="edu-item fade">
-        <div>
-          <div class="edu-deg">M.S. Game Design</div>
-          <div class="edu-school">Full Sail University</div>
-        </div>
-        <div class="edu-year">2020</div>
+</div>
+</div>
+
+<!-- WORK (timeline) -->
+<div class="page" id="page-about">
+<div class="inner">
+
+  <div class="wk-sec-label"><span>§ 02</span> · About</div>
+
+  <div class="wk-grid">
+
+    <!-- LEFT: timeline -->
+    <div class="wk-timeline">
+
+      <p class="wk-lead">Started in enterprise SaaS at Zoho, fell into games at Zygobots, grew up at Studio Sirah — developer to senior engineer in a single tour, owning gameplay, server, and CI/CD as Release Master.</p>
+
+      <div class="wk-term">$ tail -f career.log</div>
+
+      <!-- Flecks Labs -->
+      <div class="wk-company-row">
+        <span class="wk-company">Flecks Labs</span>
+        <span class="wk-dash">—</span>
+        <span class="wk-role">Senior Software Engineer</span>
       </div>
-      <div class="edu-item fade">
-        <div>
-          <div class="edu-deg">B.Tech Information Technology</div>
-          <div class="edu-school">PSG College of Technology</div>
-        </div>
-        <div class="edu-year">2013 – 2017</div>
+      <div class="wk-meta-row">
+        <span class="wk-period">Jul 2025 – Dec 2025</span>
+        <span class="wk-badge">Recent</span>
       </div>
+
+      <div class="wk-card">
+        <img src="Scoop_Up.png" alt="Scoop Up!" class="wk-card-img">
+        <div class="wk-card-header">
+          <span class="wk-proj-tag">Meta Horizon Worlds</span>
+        </div>
+        <div class="wk-stack">TypeScript · Meta Horizon Worlds · Multiplayer</div>
+        <ul class="wk-bullets">
+          <li>Developed a <strong>fast-paced multiplayer co-op game</strong> for Meta Horizon Worlds where players chase Flavour Monsters and fulfil customer orders as a team.</li>
+          <li>Built core <strong>gameplay systems in TypeScript</strong> under strict Meta platform and performance constraints.</li>
+          <li>Designed and implemented <strong>multiplayer synchronization</strong>, order management, and rush-hour game flow systems.</li>
+        </ul>
+        <div class="wk-links"><a href="https://horizon.meta.com/world/881392728384664/" target="_blank" rel="noopener" class="wk-link">Meta Horizon ↗</a></div>
+      </div>
+
+      <div class="wk-card">
+        <img src="Tiger_vs_Goat.png" alt="Tiger Goat" class="wk-card-img">
+        <div class="wk-card-header">
+          <span class="wk-proj-name">Tiger Goat</span>
+          <span class="wk-proj-tag">Android</span>
+        </div>
+        <div class="wk-stack">Unity · Photon Quantum · Deterministic Multiplayer</div>
+        <ul class="wk-bullets">
+          <li><strong>Sole developer</strong> — built all gameplay systems, UI, animations, audio and analytics from scratch.</li>
+          <li>Digital adaptation of the traditional South Indian board game <strong>Aadu Puli Aatam</strong>, reimagined as a competitive 1v1 online game.</li>
+          <li>Implemented <strong>deterministic multiplayer</strong> using Photon Quantum with frame-perfect simulation and bot matchmaking.</li>
+        </ul>
+      </div>
+
+      <!-- Studio Sirah -->
+      <div class="wk-company-row" style="margin-top:36px;">
+        <span class="wk-company">Studio Sirah</span>
+        <span class="wk-dash">—</span>
+        <span class="wk-role">Senior Developer</span>
+      </div>
+      <div class="wk-meta-row">
+        <span class="wk-period">Nov 2021 – Jun 2025</span>
+      </div>
+
+      <div class="wk-card">
+        <img src="Kurukshetra.jpg" alt="Kurukshetra: Ascension" class="wk-card-img">
+        <div class="wk-card-header">
+          <span class="wk-proj-name">Kurukshetra: Ascension</span>
+          <span class="wk-proj-tag">Multi-Platform</span>
+        </div>
+        <div class="wk-stack">Unity · Golang · PC &amp; Mobile</div>
+        <ul class="wk-bullets">
+          <li>Owned Unity client and Golang server development for an <strong>Indian-mythology card battler</strong>. 🏆 Google Play Best Indie Game 2023.</li>
+          <li>Implemented complex <strong>card mechanics, deck builder, and live events system</strong>.</li>
+          <li>Optimized builds from <strong>1 GB → 450 MB</strong> using Unity Addressables; managed CI/CD pipelines.</li>
+          <li>Mentored junior developers and led technical architecture decisions.</li>
+        </ul>
+        <div class="wk-links">
+          <a href="https://play.google.com/store/apps/details?id=com.StudioSirah.KurukshetraAscension" target="_blank" rel="noopener" class="wk-link">Play Store ↗</a>
+          <a href="https://apps.apple.com/in/app/kurukshetra-ascension/id1601430224" target="_blank" rel="noopener" class="wk-link">App Store ↗</a>
+          <a href="https://store.steampowered.com/app/1857540/Kurukshetra_Ascension/" target="_blank" rel="noopener" class="wk-link">Steam ↗</a>
+        </div>
+      </div>
+
+      <div class="wk-card">
+        <img src="Kalpa.png" alt="Kalpa: Mythic Hero Defense" class="wk-card-img">
+        <div class="wk-card-header">
+          <span class="wk-proj-name">Kalpa: Mythic Hero Defense</span>
+          <span class="wk-proj-tag">Android</span>
+        </div>
+        <div class="wk-stack">Unity · Nakama · Tower Defense</div>
+        <ul class="wk-bullets">
+          <li>Architected the <strong>enemy movement and flow-field pathfinding system</strong> from scratch — the core gameplay loop.</li>
+          <li>Three-layer movement: <strong>spline anchor + boids flocking + flow-field avoidance</strong> per unit type.</li>
+          <li>Built <strong>designer and artist tooling</strong> for wave design, level layout, and asset integration workflows.</li>
+        </ul>
+        <div class="wk-links"><a href="https://play.google.com/store/apps/details?id=com.StudioSirah.Qila" target="_blank" rel="noopener" class="wk-link">Play Store ↗</a></div>
+      </div>
+
+      <!-- Zygobots -->
+      <div class="wk-company-row" style="margin-top:36px;">
+        <span class="wk-company">Zygobots</span>
+        <span class="wk-dash">—</span>
+        <span class="wk-role">Game Developer Intern</span>
+      </div>
+      <div class="wk-meta-row">
+        <span class="wk-period">2020 – 2021</span>
+        <span class="wk-badge" style="color:#555;border-color:#333;">Internship</span>
+      </div>
+
+      <div class="wk-card">
+        <img src="Psych.jpg" alt="Psych" class="wk-card-img">
+        <div class="wk-card-header">
+          <span class="wk-proj-name">Psych</span>
+          <span class="wk-proj-tag">Steam</span>
+        </div>
+        <div class="wk-stack">Unity · Third-Person Action · Free to Play</div>
+        <ul class="wk-bullets">
+          <li>Contributed to a <strong>single-player third-person shooter</strong> where a telekinetic alien escapes a research facility overrun by killer space slugs.</li>
+          <li>Built gameplay mechanics including <strong>physics-based weapon attraction</strong> — players pull objects and weapons telekinetically.</li>
+          <li>Programmed <strong>boss AI movements, attack strategies and animation state machines</strong> for combat encounters.</li>
+        </ul>
+        <div class="wk-links"><a href="https://store.steampowered.com/app/1409370/Psych/" target="_blank" rel="noopener" class="wk-link">Steam ↗</a></div>
+      </div>
+
+      <!-- Zoho -->
+      <div class="wk-company-row" style="margin-top:36px;">
+        <span class="wk-company">Zoho Corporation</span>
+        <span class="wk-dash">—</span>
+        <span class="wk-role">Software Engineer</span>
+      </div>
+      <div class="wk-meta-row">
+        <span class="wk-period">2016 – 2018</span>
+      </div>
+
+      <div class="wk-card">
+        <div class="wk-card-header">
+          <span class="wk-proj-name">ManageEngine Password Manager Pro</span>
+          <span class="wk-proj-tag">Enterprise SaaS</span>
+        </div>
+        <div class="wk-stack">Java · Frontend · Backend</div>
+        <ul class="wk-bullets">
+          <li>Developed features for an <strong>enterprise-grade password vault</strong> used by Fortune 500 companies worldwide.</li>
+          <li>Worked on scalable <strong>frontend and backend systems</strong> supporting PCI DSS, ISO 27001 and GDPR compliance.</li>
+        </ul>
+      </div>
+
+    </div><!-- /timeline -->
+
+    <!-- RIGHT: proficiency sidebar -->
+    <div class="wk-sidebar">
+
+      <div class="wk-sidebar-section">
+        <div class="wk-sidebar-heading">| Proficiency</div>
+
+        <div class="wk-skill-cat">-- Engines --</div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Unity</span><span class="sk-lvl expert">Expert</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Unreal Engine 5</span><span class="sk-lvl adv">Advanced</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Meta Horizon</span><span class="sk-lvl adv">Advanced</span></div>
+
+        <div class="wk-skill-cat" style="margin-top:20px;">-- Languages --</div>
+        <div class="wk-skill-row"><span class="wk-sk-name">C#</span><span class="sk-lvl expert">Expert</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">C++</span><span class="sk-lvl adv">Advanced</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Golang</span><span class="sk-lvl adv">Advanced</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">TypeScript</span><span class="sk-lvl pro">Pro</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Java</span><span class="sk-lvl pro">Pro</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Python</span><span class="sk-lvl pro">Pro</span></div>
+
+        <div class="wk-skill-cat" style="margin-top:20px;">-- Multiplayer &amp; Networking --</div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Nakama</span><span class="sk-lvl expert">Expert</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Photon Quantum</span><span class="sk-lvl adv">Advanced</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Google Protobuf</span><span class="sk-lvl adv">Advanced</span></div>
+
+        <div class="wk-skill-cat" style="margin-top:20px;">-- Frameworks &amp; Libraries --</div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Unity Addressables</span><span class="sk-lvl expert">Expert</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">DOTween</span><span class="sk-lvl expert">Expert</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Unity Input System</span><span class="sk-lvl adv">Advanced</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Odin Inspector</span><span class="sk-lvl adv">Advanced</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">I2 Localization</span><span class="sk-lvl pro">Pro</span></div>
+
+        <div class="wk-skill-cat" style="margin-top:20px;">-- DevOps &amp; Tools --</div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Git / Perforce</span><span class="sk-lvl expert">Expert</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Jenkins CI/CD</span><span class="sk-lvl adv">Advanced</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Unity Profiling</span><span class="sk-lvl adv">Advanced</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Unity Editor Extensions</span><span class="sk-lvl adv">Advanced</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">JIRA</span><span class="sk-lvl adv">Advanced</span></div>
+
+        <div class="wk-skill-cat" style="margin-top:20px;">-- Analytics &amp; Services --</div>
+        <div class="wk-skill-row"><span class="wk-sk-name">AWS</span><span class="sk-lvl adv">Advanced</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">Firebase</span><span class="sk-lvl pro">Pro</span></div>
+        <div class="wk-skill-row"><span class="wk-sk-name">GameAnalytics</span><span class="sk-lvl pro">Pro</span></div>
+      </div>
+
+      <div class="wk-sidebar-section" style="margin-top:40px;">
+        <div class="wk-sidebar-heading">| Education</div>
+        <div class="wk-edu-row">
+          <div>
+            <div class="wk-edu-degree">M.S. Game Design</div>
+            <div class="wk-edu-school">Full Sail University · 2020</div>
+          </div>
+          <div>
+            <div class="wk-edu-degree">B.Tech IT</div>
+            <div class="wk-edu-school">PSG College · 2013–17</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sidebar -->
+
+  </div><!-- /wk-grid -->
+</div>
+</div>
+
+<!-- end viewport -->
+
+<!-- FOOTER -->
+<div id="bottombar">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="footer-hl">Let's build something <span>Great</span></div>
+      <div class="footer-sub">+91 94432 33771 &nbsp;•&nbsp; Bangalore, IN</div>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/kishore-boopathi-1242bb87/" target="_blank" rel="noopener" class="footer-link">LinkedIn</a>
+      <a href="https://github.com/KishoreBoopathi" target="_blank" rel="noopener" class="footer-link">GitHub</a>
+      <a href="https://kishoreboopathi.github.io/KishoreBoopathi_Resume.pdf" target="_blank" rel="noopener" class="footer-link">Resume</a>
+    </div>
+    <div class="footer-right">
+      <a href="mailto:kishoreinfocus@gmail.com" class="footer-btn">Contact Me</a>
     </div>
   </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="container" style="padding-top:64px;padding-bottom:64px;">
-    <div style="display:flex;align-items:center;gap:28px;margin-bottom:28px;">
-      <img src="photo.jpg" alt="Kishore B" style="width:80px;height:80px;border-radius:10px;object-fit:cover;object-position:center top;border:2px solid rgba(255,255,255,0.15);flex-shrink:0;">
-      <div class="contact-left">
-        <div class="contact-heading">Let's work together.</div>
-        <div class="contact-sub">+91 94432 33771 · Bangalore</div>
-      </div>
-    </div>
-    <div class="contact-actions">
-      <a href="#" onclick="window.location='mai'+'lto:'+'kishore.b.1996'+'@'+'gmail.com';return false;" class="btn btn-white">Send Email →</a>
-      <a href="https://www.linkedin.com/in/kishore-boopathi-1242bb87/" target="_blank" class="btn btn-ghost-white">LinkedIn ↗</a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <span>© 2026 Kishore Boopathi</span>
-  <span>Senior Gameplay Engineer · Bangalore</span>
-</footer>
+</div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.style.transition = 'width 1.2s ease';
-          e.target.style.width = e.target.dataset.w;
-          obs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.skill-bar-fill').forEach(b => obs.observe(b));
+/* ═══ DATA ═══════════════════════════════ */
+const SHIPPED = [
+  {
+    tabTitle:'Kurukshetra', tabCompany:'STUDIO SIRAH', tabYear:'2021–25',
+    meta:'MULTIPLAYER CARD BATTLER — 2021', cover:'[ COVER ART: KURUKSHETRA ]', tag:'MULTI-PLATFORM',
+    title:'Kurukshetra: Ascension', subtitle:'UNITY · GOLANG · PC & MOBILE',
+    desc:'Indian-mythology strategy card battler. 🏆 Google Play Best Indie Game 2023. Full ownership of Unity gameplay and Golang server. 500K+ downloads.',
+    bullets:[
+      'Progressed to <strong>Senior Engineer</strong> — owned the full stack and mentored 2 junior developers.',
+      'Built <strong>store, IAP, live events, inbox and monetization pipeline</strong> end-to-end.',
+      'Reduced mobile build from <strong>1 GB → 450 MB</strong> using Unity Addressables.',
+      'Release Master — owned <strong>CI/CD and iOS deployment</strong> across all release cycles.',
+    ],
+    tags:['Unity','C#','Golang','Nakama','iOS','Android','Steam'],
+    links:[
+      {label:'Play Store ↗',url:'https://play.google.com/store/apps/details?id=com.StudioSirah.KurukshetraAscension'},
+      {label:'App Store ↗',url:'https://apps.apple.com/in/app/kurukshetra-ascension/id1601430224'},
+      {label:'Steam ↗',url:'https://store.steampowered.com/app/1857540/Kurukshetra_Ascension/'},
+    ]
+  },
+  {
+    tabTitle:'Kalpa', tabCompany:'STUDIO SIRAH', tabYear:'2021–25',
+    meta:'TOWER DEFENSE — 2022', cover:'[ COVER ART: KALPA ]', tag:'ANDROID',
+    title:'Kalpa: Mythic Hero Defense', subtitle:'UNITY · NAKAMA · TOWER DEFENSE',
+    desc:'Mythic tower defense defending the sacred world tree Kalpa against Asura hordes using legendary heroes from Indian epics.',
+    bullets:[
+      'Architected <strong>enemy movement and flow-field pathfinding</strong> from scratch — the core gameplay loop.',
+      'Three-layer movement: <strong>spline anchor + boids flocking + flow-field avoidance</strong> per unit type.',
+      'Built <strong>designer and artist tooling</strong> for wave design, level layout, and asset workflows.',
+    ],
+    tags:['Unity','C#','Nakama','Android'],
+    links:[{label:'Play Store ↗',url:'https://play.google.com/store/apps/details?id=com.StudioSirah.Qila'}]
+  },
+  {
+    tabTitle:'Scoop Up!', tabCompany:'FLECKS LABS', tabYear:'2025',
+    meta:'MULTIPLAYER CO-OP — 2025', cover:'[ COVER ART: SCOOP UP ]', tag:'META QUEST EXCLUSIVE',
+    title:'Scoop Up!', subtitle:'MULTIPLAYER CO-OP · META HORIZON WORLDS',
+    desc:'Fast-paced multiplayer co-op for Meta Horizon Worlds. Players chase Flavour Monsters and fulfil customer orders as a team through increasingly frantic rush-hour shifts.',
+    bullets:[
+      'Developed core <strong>gameplay systems in TypeScript</strong> under strict Meta platform and performance constraints.',
+      'Designed and implemented <strong>multiplayer synchronization</strong>, order management, and rush-hour game flow systems.',
+    ],
+    tags:['TypeScript','Meta Horizon SDK','Multiplayer'],
+    links:[{label:'Meta Horizon ↗',url:'https://horizon.meta.com/world/881392728384664/'}]
+  },
+  {
+    tabTitle:'Tiger Goat', tabCompany:'FLECKS LABS', tabYear:'2025',
+    meta:'STRATEGY BOARD GAME — 2025', cover:'[ COVER ART: TIGER GOAT ]', tag:'ANDROID',
+    title:'Tiger Goat', subtitle:'UNITY · PHOTON QUANTUM · DETERMINISTIC MULTIPLAYER',
+    desc:'Sole developer — digital adaptation of the traditional South Indian board game Aadu Puli Aatam, reimagined as a competitive 1v1 online game.',
+    bullets:[
+      '<strong>Deterministic lockstep multiplayer</strong> via Photon Quantum — frame-perfect, no state replication.',
+      'Dual AI: <strong>in-simulation deterministic</strong> AI and offline minimax with repetition avoidance.',
+      'Proactive reconnection with <strong>5s snapshots</strong>; full analytics pipeline (GameAnalytics + Tenjin).',
+    ],
+    tags:['Unity','C#','Photon Quantum','Android'],
+    links:[{label:'Play Store ↗',url:'#'}]
+  },
+  {
+    tabTitle:'Psych', tabCompany:'ZYGOBOTS', tabYear:'2020–21',
+    meta:'THIRD-PERSON ACTION — 2021', cover:'[ COVER ART: PSYCH ]', tag:'STEAM',
+    title:'Psych', subtitle:'UNITY · THIRD-PERSON ACTION · FREE TO PLAY',
+    desc:'Single-player third-person shooter where a telekinetic alien escapes a research facility overrun by killer space slugs.',
+    bullets:[
+      'Built <strong>physics-based weapon attraction</strong> — players pull objects and weapons telekinetically.',
+      'Programmed <strong>boss AI movements, attack strategies and animation state machines</strong>.',
+      'QA testing and gameplay balancing across multiple build cycles.',
+    ],
+    tags:['Unity','C#','Steam'],
+    links:[{label:'Steam ↗',url:'https://store.steampowered.com/app/1409370/Psych/'}]
+  },
+];
+
+const PERSONAL = [
+  {
+    tabTitle:'Vanara', tabCompany:'UNREAL ENGINE', tabYear:'2025',
+    meta:'ACTION-RPG SANDBOX — 2025', cover:'[ TECH DEMO: VANARA ]', tag:'PORTFOLIO PROJECT',
+    title:'Vanara — Open World Action RPG', subtitle:'UNREAL ENGINE 5 · C++ · BLUEPRINTS',
+    desc:'Sole programmer. UE5 C++ portfolio project — a polished 3C + combat sandbox. Originally built in UE4; migrated to UE5 with system refactoring, porting one by one for deep architectural understanding.',
+    bullets:[
+      'Built player movement, combat system, <strong>advanced AI with behavior trees</strong>, three boss encounters, and a full quest system with objectives.',
+      'Component-based: <strong>VaaliCombatComponent</strong> owns all combo logic, montage dispatch, and hitbox collision.',
+      'Strict combo window via <strong>AnimNotify gates</strong> — not input-buffered. Timer-based safety fallback.',
+      'Collision boxes dormant by default — activated only during <strong>active strike frames</strong>.',
+    ],
+    tags:['Unreal Engine 5','C++','Blueprints','Rider','EnhancedInput'],
+    links:[{label:'GitHub ↗',url:'https://github.com/KishoreBoopathi/unreal-systems-cpp'}]
+  },
+  {
+    tabTitle:'Weapon System', tabCompany:'UNITY · C#', tabYear:'2024',
+    meta:'MODULAR DESIGN — 2024', cover:'[ PROJECT: WEAPON SYSTEM ]', tag:'UNITY · C#',
+    title:'Modular Weapon Attachment System', subtitle:'UNITY · C# · INTERFACE-DRIVEN ARCHITECTURE',
+    desc:'Runtime weapon customization via a socket-based attachment model. Interface-driven polymorphism keeps the Gun class fully decoupled — adding new attachment types requires zero changes to core weapon logic.',
+    bullets:[
+      '<strong>Socket-based attachment model</strong> — attachments snap to defined sockets at runtime.',
+      'Interface-driven polymorphism keeps the <strong>Gun class fully decoupled</strong> from attachment logic.',
+      'Adding new attachment types requires <strong>zero changes</strong> to core weapon code.',
+    ],
+    tags:['Unity','C#','Interface Design','Modular Architecture'],
+    links:[{label:'GitHub ↗',url:'https://github.com/KishoreBoopathi/ModularWeaponSystem'}]
+  },
+  {
+    tabTitle:'Quest Engine', tabCompany:'UNITY · C#', tabYear:'2024',
+    meta:'EVENT-DRIVEN SYSTEMS — 2024', cover:'[ PROJECT: QUEST SYSTEM ]', tag:'UNITY · C#',
+    title:'Quest System', subtitle:'UNITY · C# · EVENT-DRIVEN ARCHITECTURE',
+    desc:'Lightweight quest framework built on a generic event bus. Gameplay systems fire named events; quests listen and evaluate progress. No direct coupling between quest logic and the systems that trigger it.',
+    bullets:[
+      'Generic <strong>event bus</strong> — gameplay systems fire named events, quests subscribe and evaluate.',
+      '<strong>Zero coupling</strong> between quest logic and triggering systems.',
+      'Easily extensible — new quest types require no changes to the core framework.',
+    ],
+    tags:['Unity','C#','Event-Driven','Generic Systems'],
+    links:[{label:'GitHub ↗',url:'https://github.com/KishoreBoopathi/QuestSystem'}]
+  },
+  {
+    tabTitle:'SpaceEx', tabCompany:'UNITY · C#', tabYear:'2023',
+    meta:'2D ARCADE SHOOTER — 2023', cover:'[ PROJECT: SPACEEX ]', tag:'UNITY · C#',
+    title:'SpaceEx — 2D Space Shooter', subtitle:'UNITY · C# · OBJECT POOLING · WAVE SPAWNING',
+    desc:'Complete arcade shooter with data-driven wave spawning, object pooling, composite enemy AI with homing variants, and a full game loop from splash to credits.',
+    bullets:[
+      '<strong>Data-driven wave spawning</strong> — designer-configurable enemy waves and timing.',
+      '<strong>Object pooling</strong> — projectiles, enemies, and VFX managed via pool.',
+      'Composite enemy AI with <strong>homing variants</strong>; full game loop splash to credits.',
+    ],
+    tags:['Unity','C#','Object Pooling','Wave Spawning','Game Loop'],
+    links:[{label:'GitHub ↗',url:'https://github.com/KishoreBoopathi/SpaceEx'}]
+  },
+  {
+    tabTitle:'Net-Cards', tabCompany:'UNITY · MIRROR', tabYear:'2023',
+    meta:'MULTIPLAYER PROTOTYPE — 2023', cover:'[ PROJECT: NETWORKED CARD GAME ]', tag:'UNITY · MIRROR',
+    title:'Networked Card Game', subtitle:'UNITY · C# · MIRROR NETWORKING',
+    desc:'Two-player networked card game with server-authoritative deal and play flow. Authority-gated player actions, hidden-information card state, and server-side spawn with client-side UI placement.',
+    bullets:[
+      '<strong>Server-authoritative</strong> deal and play flow — clients never own game state.',
+      '<strong>Authority-gated</strong> player actions prevent invalid moves.',
+      'Hidden-information card state with <strong>server-side spawn</strong> and client-side UI placement.',
+    ],
+    tags:['Unity','C#','Mirror Networking','Multiplayer'],
+    links:[{label:'GitHub ↗',url:'https://github.com/KishoreBoopathi/CardGame'}]
+  },
+];
+
+/* ═══ ACCORDION ══════════════════════════ */
+const accState = { shipped: 0, personal: 0 };
+
+function buildCardHTML(d) {
+  const linksHtml = d.links.length
+    ? `<div class="acc-links">${d.links.map(l=>`<a href="${l.url}" target="_blank" rel="noopener" class="acc-link">${l.label}</a>`).join('')}</div>`
+    : '';
+  return `
+    <div class="acc-tab-inner">
+      <div class="acc-tab-company">${d.tabCompany}</div>
+      <div class="acc-tab-title">${d.tabTitle}</div>
+      <div class="acc-tab-year">${d.tabYear}</div>
+    </div>
+    <div class="acc-expanded">
+      <div class="acc-cover">
+        <span class="acc-cover-meta">${d.meta}</span>
+        <span class="acc-cover-label">${d.cover}</span>
+        <span class="acc-cover-tag">${d.tag}</span>
+      </div>
+      <div class="acc-body">
+        <div class="acc-title">${d.title}</div>
+        <div class="acc-subtitle">${d.subtitle}</div>
+        <p class="acc-desc">${d.desc}</p>
+        <ul class="acc-bullets">${d.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+        <div class="acc-tags">${d.tags.map(t=>`<span class="acc-tag">${t}</span>`).join('')}</div>
+        ${linksHtml}
+      </div>
+    </div>`;
+}
+
+function buildAccordion(group) {
+  const arr = group === 'shipped' ? SHIPPED : PERSONAL;
+  const container = document.getElementById('acc-' + group);
+  container.innerHTML = '';
+  arr.forEach((d, i) => {
+    const card = document.createElement('div');
+    card.className = 'acc-card' + (i === accState[group] ? ' open' : '');
+    card.dataset.idx = i;
+    card.innerHTML = buildCardHTML(d);
+    card.addEventListener('click', () => {
+      if (card.classList.contains('open')) return;
+      openCard(group, i);
+    });
+    container.appendChild(card);
   });
+  refreshMeta(group);
+}
+
+function openCard(group, idx) {
+  if (idx === accState[group]) return;
+  accState[group] = idx;
+  document.querySelectorAll(`#acc-${group} .acc-card`).forEach((c, i) => {
+    c.classList.toggle('open', i === idx);
+  });
+  refreshMeta(group);
+}
+
+function refreshMeta(group) {
+  const arr = group === 'shipped' ? SHIPPED : PERSONAL;
+  const idx = accState[group];
+  // dots
+  const dotsEl = document.getElementById(group + '-dots');
+  if (dotsEl) {
+    dotsEl.innerHTML = '';
+    for (let i = 0; i < arr.length; i++) {
+      const d = document.createElement('div');
+      d.className = 'p-dot' + (i === idx ? ' active' : '');
+      dotsEl.appendChild(d);
+    }
+  }
+  // counter
+  const cEl = document.getElementById(group + '-counter');
+  if (cEl) cEl.textContent = `${String(idx+1).padStart(2,'0')} / ${String(arr.length).padStart(2,'0')}`;
+}
+
+/* ═══ PAGE NAV ═══════════════════════════ */
+const pages = ['home','work','about'];
+const pgLabels = {home:'01 / 03',work:'02 / 03',about:'03 / 03'};
+let currentPage = 'home', busy = false;
+
+function showPage(id) {
+  if (id === currentPage || busy) return;
+  busy = true;
+  const prev = document.getElementById('page-' + currentPage);
+  const next = document.getElementById('page-' + id);
+  prev.classList.add('exit'); prev.classList.remove('active');
+  setTimeout(() => {
+    prev.classList.remove('exit');
+    next.classList.add('active');
+    next.scrollTop = 0;
+    busy = false;
+  }, 220);
+  currentPage = id;
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === id));
+  if (id === 'home') runCounters();
+}
+
+document.querySelectorAll('.nav-btn').forEach(b => b.addEventListener('click', () => showPage(b.dataset.page)));
+
+/* ═══ COUNTERS ══════════════════════════ */
+function animateCounter(el) {
+  if (el.dataset.done) return;
+  el.dataset.done = '1';
+  const target = +el.dataset.target, suffix = el.dataset.suffix || '', t0 = performance.now();
+  (function tick(now) {
+    const p = Math.min((now-t0)/900,1), v = Math.floor((1-Math.pow(1-p,3))*target);
+    el.textContent = v + suffix;
+    if (p<1) requestAnimationFrame(tick);
+  })(t0);
+}
+function runCounters() { document.querySelectorAll('.h-stat-num[data-target]').forEach(animateCounter); }
+
+/* ═══ KEYBOARD ══════════════════════════ */
+document.addEventListener('keydown', e => {
+  const i = pages.indexOf(currentPage);
+  if (e.key==='ArrowRight' && i<pages.length-1) showPage(pages[i+1]);
+  if (e.key==='ArrowLeft'  && i>0)              showPage(pages[i-1]);
+});
+
+/* ═══ BOOT ══════════════════════════════ */
+buildAccordion('shipped');
+buildAccordion('personal');
+setTimeout(runCounters, 200);
 </script>
 </body>
 </html>
