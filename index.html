@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kishore B — Senior Gameplay Engineer</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%23ff5733'/><text y='72' x='50' text-anchor='middle' font-size='58' font-family='Georgia,serif' font-style='italic' fill='white'>K</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Atkinson+Hyperlegible+Next:ital,wght@0,300;0,400;0,500;1,400&family=Space+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -562,11 +563,13 @@ body::before {
   margin: -18px -20px 14px -20px;
   width: calc(100% + 40px);
 }
-  border: 1px solid #1e1e1e;
+
+.wk-card {
+  border: 1px solid #333;
   border-radius: 6px;
   padding: 18px 20px;
   margin-bottom: 12px;
-  background: #0d0d0d;
+  background: #111;
 }
 .wk-card-header {
   display: flex; justify-content: space-between;
@@ -829,8 +832,8 @@ body::before {
       </div>
 
       <div class="wk-card">
-        <img src="Scoop_Up.png" alt="Scoop Up!" class="wk-card-img">
         <div class="wk-card-header">
+          <span class="wk-proj-name">Scoop Up!</span>
           <span class="wk-proj-tag">Meta Horizon Worlds</span>
         </div>
         <div class="wk-stack">TypeScript · Meta Horizon Worlds · Multiplayer</div>
@@ -843,7 +846,6 @@ body::before {
       </div>
 
       <div class="wk-card">
-        <img src="Tiger_vs_Goat.png" alt="Tiger Goat" class="wk-card-img">
         <div class="wk-card-header">
           <span class="wk-proj-name">Tiger Goat</span>
           <span class="wk-proj-tag">Android</span>
@@ -867,7 +869,6 @@ body::before {
       </div>
 
       <div class="wk-card">
-        <img src="Kurukshetra.jpg" alt="Kurukshetra: Ascension" class="wk-card-img">
         <div class="wk-card-header">
           <span class="wk-proj-name">Kurukshetra: Ascension</span>
           <span class="wk-proj-tag">Multi-Platform</span>
@@ -887,7 +888,6 @@ body::before {
       </div>
 
       <div class="wk-card">
-        <img src="Kalpa.png" alt="Kalpa: Mythic Hero Defense" class="wk-card-img">
         <div class="wk-card-header">
           <span class="wk-proj-name">Kalpa: Mythic Hero Defense</span>
           <span class="wk-proj-tag">Android</span>
@@ -913,7 +913,6 @@ body::before {
       </div>
 
       <div class="wk-card">
-        <img src="Psych.jpg" alt="Psych" class="wk-card-img">
         <div class="wk-card-header">
           <span class="wk-proj-name">Psych</span>
           <span class="wk-proj-tag">Steam</span>
@@ -1040,7 +1039,7 @@ body::before {
 const SHIPPED = [
   {
     tabTitle:'Kurukshetra', tabCompany:'STUDIO SIRAH', tabYear:'2021–25',
-    meta:'MULTIPLAYER CARD BATTLER — 2021', cover:'[ COVER ART: KURUKSHETRA ]', tag:'MULTI-PLATFORM',
+    meta:'MULTIPLAYER CARD BATTLER — 2021', cover:'Kurukshetra.jpg', tag:'MULTI-PLATFORM',
     title:'Kurukshetra: Ascension', subtitle:'UNITY · GOLANG · PC & MOBILE',
     desc:'Indian-mythology strategy card battler. 🏆 Google Play Best Indie Game 2023. Full ownership of Unity gameplay and Golang server. 500K+ downloads.',
     bullets:[
@@ -1058,7 +1057,7 @@ const SHIPPED = [
   },
   {
     tabTitle:'Kalpa', tabCompany:'STUDIO SIRAH', tabYear:'2021–25',
-    meta:'TOWER DEFENSE — 2022', cover:'[ COVER ART: KALPA ]', tag:'ANDROID',
+    meta:'TOWER DEFENSE — 2022', cover:'Kalpa.png', tag:'ANDROID',
     title:'Kalpa: Mythic Hero Defense', subtitle:'UNITY · NAKAMA · TOWER DEFENSE',
     desc:'Mythic tower defense defending the sacred world tree Kalpa against Asura hordes using legendary heroes from Indian epics.',
     bullets:[
@@ -1071,7 +1070,7 @@ const SHIPPED = [
   },
   {
     tabTitle:'Scoop Up!', tabCompany:'FLECKS LABS', tabYear:'2025',
-    meta:'MULTIPLAYER CO-OP — 2025', cover:'[ COVER ART: SCOOP UP ]', tag:'META QUEST EXCLUSIVE',
+    meta:'MULTIPLAYER CO-OP — 2025', cover:'Scoop_Up.png', tag:'META QUEST EXCLUSIVE',
     title:'Scoop Up!', subtitle:'MULTIPLAYER CO-OP · META HORIZON WORLDS',
     desc:'Fast-paced multiplayer co-op for Meta Horizon Worlds. Players chase Flavour Monsters and fulfil customer orders as a team through increasingly frantic rush-hour shifts.',
     bullets:[
@@ -1083,7 +1082,7 @@ const SHIPPED = [
   },
   {
     tabTitle:'Tiger Goat', tabCompany:'FLECKS LABS', tabYear:'2025',
-    meta:'STRATEGY BOARD GAME — 2025', cover:'[ COVER ART: TIGER GOAT ]', tag:'ANDROID',
+    meta:'STRATEGY BOARD GAME — 2025', cover:'Tiger_vs_Goat.png', tag:'ANDROID',
     title:'Tiger Goat', subtitle:'UNITY · PHOTON QUANTUM · DETERMINISTIC MULTIPLAYER',
     desc:'Sole developer — digital adaptation of the traditional South Indian board game Aadu Puli Aatam, reimagined as a competitive 1v1 online game.',
     bullets:[
@@ -1096,7 +1095,7 @@ const SHIPPED = [
   },
   {
     tabTitle:'Psych', tabCompany:'ZYGOBOTS', tabYear:'2020–21',
-    meta:'THIRD-PERSON ACTION — 2021', cover:'[ COVER ART: PSYCH ]', tag:'STEAM',
+    meta:'THIRD-PERSON ACTION — 2021', cover:'Psych.jpg', tag:'STEAM',
     title:'Psych', subtitle:'UNITY · THIRD-PERSON ACTION · FREE TO PLAY',
     desc:'Single-player third-person shooter where a telekinetic alien escapes a research facility overrun by killer space slugs.',
     bullets:[
@@ -1182,6 +1181,10 @@ const PERSONAL = [
 const accState = { shipped: 0, personal: 0 };
 
 function buildCardHTML(d) {
+  const isImg = d.cover && !d.cover.startsWith('[');
+  const coverContent = isImg
+    ? `<img src="${d.cover}" alt="${d.title}" style="width:100%;height:100%;object-fit:cover;display:block;">`
+    : `<span class="acc-cover-label">${d.cover}</span>`;
   const linksHtml = d.links.length
     ? `<div class="acc-links">${d.links.map(l=>`<a href="${l.url}" target="_blank" rel="noopener" class="acc-link">${l.label}</a>`).join('')}</div>`
     : '';
@@ -1194,7 +1197,7 @@ function buildCardHTML(d) {
     <div class="acc-expanded">
       <div class="acc-cover">
         <span class="acc-cover-meta">${d.meta}</span>
-        <span class="acc-cover-label">${d.cover}</span>
+        ${coverContent}
         <span class="acc-cover-tag">${d.tag}</span>
       </div>
       <div class="acc-body">
